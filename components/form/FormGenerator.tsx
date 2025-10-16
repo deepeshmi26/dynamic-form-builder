@@ -1,15 +1,22 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { createContext, useRef } from "react";
+import { createContext, useCallback, useRef } from "react";
 import { FieldPath, FieldValues, Path, useForm } from "react-hook-form";
 import { FormItemComponent } from "./FormComponent";
-import { FormFieldConfig, FormItemType } from "./types";
+import { FormFieldConfig } from "./types";
 
 type Props<TFieldValues extends FieldValues> = {
   config: (Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> })[];
   onSubmit?: (values: TFieldValues) => void;
+  adapter?: Record<
+    string,
+    React.ComponentType<{
+      value?: unknown;
+      onChange?: (value: unknown) => void;
+      [key: string]: unknown;
+    }>
+  >;
 };
 
 //Todo: Fix the types to work seamlessly with the react hook form
@@ -42,7 +49,9 @@ export const FormRegistryContext = createContext<
 export function FormGenerator<TFieldValues extends FieldValues>({
   config,
   onSubmit,
-}: Props<TFieldValues>) {
+  children,
+  adapter,
+}: React.PropsWithChildren<Props<TFieldValues>>) {
   const form = useForm<TFieldValues>();
 
   const registry = useRef<FormRegistryContextType<TFieldValues>["registry"]>(
@@ -52,37 +61,45 @@ export function FormGenerator<TFieldValues extends FieldValues>({
   const handleSubmit = (values: TFieldValues) => {
     if (onSubmit) {
       onSubmit(values);
-    } else {
-      console.log(values);
     }
   };
 
-  const updateState = (
-    newConfig: Omit<FormFieldConfig, "name"> & { name: string }
-  ) => {
-    if (registry.current) {
-      const { name, ...rest } = newConfig;
-      registry.current[name]?.setState(rest);
-    }
-  };
+  const updateState = useCallback(
+    (newConfig: Omit<FormFieldConfig, "name"> & { name: string }) => {
+      if (registry.current) {
+        const { name, ...rest } = newConfig;
+        registry.current[name]?.setState(rest);
+      }
+    },
+    []
+  );
+
+  const register = useCallback(
+    (
+      name: string,
+      config: Omit<FormFieldConfig, "name"> & { name: string },
+      setStateCall: (state: TFieldValues[keyof TFieldValues]) => void
+    ) => {
+      if (registry.current) {
+        registry.current[name as string] = {
+          config: config as Omit<FormFieldConfig, "name"> & {
+            name: FieldPath<TFieldValues>;
+          },
+          setState: setStateCall,
+        } as TFieldValues[keyof TFieldValues];
+      }
+    },
+    []
+  );
 
   return (
     <Form {...form}>
       <FormRegistryContext.Provider
         value={{
           registry: registry.current,
-          register: (name, config, setStateCall) => {
-            if (registry.current) {
-              registry.current[name as string] = {
-                config: config as Omit<FormFieldConfig, "name"> & {
-                  name: FieldPath<TFieldValues>;
-                },
-                setState: setStateCall as TFieldValues[keyof TFieldValues],
-              } as TFieldValues[keyof TFieldValues];
-            }
-          },
+          register: register,
           adapter: {
-            [FormItemType.TEXT]: () => <>Hello world</>,
+            ...adapter,
           },
           updateState: updateState,
         }}
@@ -95,27 +112,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
               config={field}
             />
           ))}
-          <div className="flex">
-            <Button type="submit" className="w-full sm:w-auto">
-              Submit
-            </Button>
-          </div>
-          <div className="flex">
-            <Button
-              type="button"
-              className="w-full sm:w-auto"
-              onClick={() =>
-                updateState({
-                  name: "name",
-                  label: "First Name",
-                  type: FormItemType.TEXT,
-                })
-              }
-            >
-              Test registry by updating state type of name item label to First
-              Name
-            </Button>
-          </div>
+          {children}
         </form>
       </FormRegistryContext.Provider>
     </Form>

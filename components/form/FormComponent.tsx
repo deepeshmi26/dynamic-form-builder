@@ -78,7 +78,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           return null;
       }
     },
-    [state.options, state.placeholder, state.type]
+    [adapter, state.options, state.placeholder, state.type]
   );
   return (
     <FormField
