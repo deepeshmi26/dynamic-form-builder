@@ -3,7 +3,8 @@
     "name": "name",
     "label": "Name",
     "type": "TEXT",
-    "placeholder": "Enter your name"
+    "placeholder": "Enter your name",
+    "required": true
   },
   {
     "name": "contactDetails",
@@ -14,7 +15,8 @@
         "name": "email",
         "label": "Email",
         "type": "TEXT",
-        "placeholder": "Enter your email"
+        "placeholder": "Enter your email",
+        "required": true
       },
       {
         "name": "phone",

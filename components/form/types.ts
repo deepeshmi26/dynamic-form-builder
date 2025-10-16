@@ -17,6 +17,13 @@ export type FormFieldConfig = {
   type: FormItemType;
   options?: FormOption[];
   placeholder?: string;
+  validation?: {
+    min?: number;
+    max?: number;
+    pattern?: string;
+  };
+  required?: boolean;
+  structure?: FormFieldConfig[];
 };
 
 export type StringOption = { label: string; value: string; disabled?: boolean };
