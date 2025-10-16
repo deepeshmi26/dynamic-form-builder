@@ -13,17 +13,19 @@ Shadcn works well with Nextjs. Nextjs gives out of box support for shadcn and ta
 5. [X] Convert the form to a json mapping based generator
 6. [X] Create a **FormWrapperComponent** that wraps each **Child form item**. The wrapper component will have reused props/structures.
     1. [X] A component should accept: value, onChange so that we can build any component with this strcture.
-7. [ ] Create a **FormRegistryContext**
-    1. [ ] The context should wrap the entire form, but it should be inside React hook form to enable access to React hook form apis.
-    2. [ ] In the FormWrapperComponent, have a state call. Expose the setState call of each FormWrapper component to registry.
-8. [ ] Now add the support for ajv based validation. if ajv does not work smoothly with nextjs , move to zod.
-9. [ ] Take care of typescript types later on
+7. [X] Create a **FormRegistryContext**
+    1. [X] The context should wrap the entire form, but it should be inside React hook form to enable access to React hook form apis.
+    2. [X] In the FormWrapperComponent, have a state call. Expose the setState call of each FormWrapper component to registry.
+8. [ ] Now add support for zod based validation. Why zod? Because i want to do type based validation when creating the json form as well.
+9. [ ] Add more validation support.
+1. [ ] Add more field supports e.g. upload, date etc.
+1. [ ] Take care of typescript types later on
 1. [ ] Extendability
-     1. [ ] Make use of adapter pattern to extend the support for new form items at the form level
+     1. [X] Make use of adapter pattern to extend the support for new form items at the form level
      2. [ ] Make use of adapter pattern at the top most level to enable making use of a set of patterns for the entire application
      3. [ ] Enable extending label to support reactNode
      4. [ ] Enable semantic styling for the entire form
-4. [ ] 
+13. [ ]
 
 ### Similarity between Antd form and React hook Form
 
