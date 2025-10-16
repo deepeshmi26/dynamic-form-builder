@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project. 
+This is a [Next.js](https://nextjs.org) project.
 
 Considering that its a single feature, I have made use of Shadcn.
 
@@ -6,11 +6,32 @@ Shadcn works well with Nextjs. Nextjs gives out of box support for shadcn and ta
 
 # Next steps (note keeping purpose, this will be moved to some place else later on):
 
-1. Install shadcn form
-2. Install shadcn select, input, checkbox, radio, date.
-3. Build a small form which has all the above mentioned components.
-4. Add a submit button support. On submit, gather the information of the form and do console.log.
-5. Now add the support for ajv based validation. if ajv does not work smoothly with nextjs , move to zod.
+1. [X] Install shadcn form
+2. [X] Install shadcn select, input, checkbox, radio, date.
+3. [X] Build a small form which has all the above mentioned components.
+4. [X] Add a submit button support. On submit, gather the information of the form and do console.log.
+5. [X] Convert the form to a json mapping based generator
+6. [X] Create a **FormWrapperComponent** that wraps each **Child form item**. The wrapper component will have reused props/structures.
+    1. [X] A component should accept: value, onChange so that we can build any component with this strcture.
+7. [ ] Create a **FormRegistryContext**
+    1. [ ] The context should wrap the entire form, but it should be inside React hook form to enable access to React hook form apis.
+    2. [ ] In the FormWrapperComponent, have a state call. Expose the setState call of each FormWrapper component to registry.
+8. [ ] Now add the support for ajv based validation. if ajv does not work smoothly with nextjs , move to zod.
+9. [ ] Take care of typescript types later on
+
+### Similarity between Antd form and React hook Form
+
+```
+<Form.Item>
+<Some Component value={} onChange={} />
+</Form.Item>
+```
+
+```
+<Controller 
+render = {({field}) => <SomeComponent value={field.value} onChange={field.conChange}}
+/>
+```
 
 ## Deploy on Vercel
 

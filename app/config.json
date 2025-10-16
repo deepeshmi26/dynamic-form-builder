@@ -1,0 +1,37 @@
+[
+  {
+    "name": "name",
+    "label": "Name",
+    "type": "TEXT",
+    "placeholder": "Enter your name"
+  },
+  {
+    "name": "satisfaction",
+    "label": "How satisfied are you?",
+    "type": "RADIO",
+    "options": [
+      { "value": "5", "label": "Very Satisfied" },
+      { "value": "4", "label": "Satisfied" },
+      { "value": "3", "label": "Neutral" },
+      { "value": "2", "label": "Dissatisfied" },
+      { "value": "1", "label": "Very Dissatisfied" }
+    ]
+  },
+  {
+    "name": "improvements",
+    "label": "What areas need improvement?",
+    "type": "SELECT",
+    "placeholder": "Select areas",
+    "options": [
+      { "value": "ui", "label": "User Interface" },
+      { "value": "performance", "label": "Performance" },
+      { "value": "features", "label": "Features" },
+      { "value": "docs", "label": "Documentation" }
+    ]
+  },
+  {
+    "name": "subscribe",
+    "label": "Subscribe to newsletter",
+    "type": "CHECBOX"
+  }
+]
