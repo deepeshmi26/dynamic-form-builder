@@ -1,33 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project. 
 
-## Getting Started
+Considering that its a single feature, I have made use of Shadcn.
 
-First, run the development server:
+Shadcn works well with Nextjs. Nextjs gives out of box support for shadcn and tailwind + theming. Thus, for this project it made sense to have a boilerplate of Next.js + Shadcn + Tailwind. Shadcn latest requires node js v22.0. Later on we will add a small installation step. Right now I have made use of nvmrc file + package.json engine configuration to configure node js for this project.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Next steps (note keeping purpose, this will be moved to some place else later on):
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Install shadcn form
+2. Install shadcn select, input, checkbox, radio, date.
+3. Build a small form which has all the above mentioned components.
+4. Add a submit button support. On submit, gather the information of the form and do console.log.
+5. Now add the support for ajv based validation. if ajv does not work smoothly with nextjs , move to zod.
 
 ## Deploy on Vercel
 
