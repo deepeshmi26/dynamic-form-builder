@@ -70,7 +70,13 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
             />
           );
         case FormItemType.ARRAY:
-          return <ArrayFormItem name={name} structure={state.structure} path={path ?? ""} />;
+          return (
+            <ArrayFormItem
+              name={name}
+              structure={state.structure}
+              path={path ?? ""}
+            />
+          );
         case FormItemType.CHECKBOX:
           return (
             <CheckboxFormItem
@@ -82,7 +88,15 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           return null;
       }
     },
-    [adapter, state.options, state.placeholder, state.type]
+    [
+      adapter,
+      name,
+      path,
+      state.options,
+      state.placeholder,
+      state.structure,
+      state.type,
+    ]
   );
   return (
     <FormField
