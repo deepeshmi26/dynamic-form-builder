@@ -4,8 +4,43 @@
     "label": "Name",
     "type": "TEXT",
     "placeholder": "Enter your name",
+    "required": true,
+    "validation": {
+      "minLength": 3,
+      "maxLength": 100
+    },
+    "onCondition": {}
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "SELECT",
+    "placeholder": "Select your city",
+    "options": [
+      { "value": "new york", "label": "New York" },
+      { "value": "los angeles", "label": "Los Angeles" },
+      { "value": "chicago", "label": "Chicago" },
+      { "value": "houston", "label": "Houston" },
+      { "value": "miami", "label": "Miami" }
+    ],
     "required": true
   },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "NUMBER",
+    "placeholder": "Enter your age",
+    "required": true
+  },
+  {
+    "name": "parentName",
+    "label": "Parent Name",
+    "type": "TEXT",
+    "placeholder": "Enter your parent name",
+    "required": true,
+    "onConditionMatch": [{}]
+  },
+
   {
     "name": "contactDetails",
     "label": "Contact Details",

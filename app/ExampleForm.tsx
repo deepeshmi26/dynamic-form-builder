@@ -12,7 +12,7 @@ export function ExampleForm() {
     console.log(values);
   };
   return (
-    <FormGenerator config={config} onSubmit={handleSubmit} initialValues={sampleInitialValues}>
+    <FormGenerator config={config} onSubmit={handleSubmit}>
       <div className="flex">
         <Button type="submit" className="w-full sm:w-auto">
           Submit

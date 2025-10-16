@@ -17,6 +17,7 @@ import {
 import { z } from "zod";
 import { FormItemComponent } from "./FormComponent";
 import { FormFieldConfig, FormItemType } from "./types";
+import { ZodValidator } from "./resolvers";
 
 type Props<TFieldValues extends FieldValues> = {
   config: (Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> })[];
@@ -65,46 +66,12 @@ export function FormGenerator<TFieldValues extends FieldValues>({
   adapter,
   initialValues,
 }: React.PropsWithChildren<Props<TFieldValues>>) {
-  // Helper function to get field validation
-  const getFieldValidation = (field: FormFieldConfig): z.ZodTypeAny => {
-    if (field.type === FormItemType.ARRAY && field.structure) {
-      return z.array(
-        z.object(
-          field.structure.reduce<z.ZodRawShape>(
-            (acc, structField) => ({
-              ...acc,
-              [structField.name]: getFieldValidation(structField),
-            }),
-            {}
-          )
-        )
-      );
-    }
-
-    let validation = z.string();
-    if (field.required) validation = validation.min(1, "Required");
-    if (field.validation?.min)
-      validation = validation.min(field.validation.min);
-    if (field.validation?.max)
-      validation = validation.max(field.validation.max);
-    if (field.validation?.pattern)
-      validation = validation.regex(new RegExp(field.validation.pattern));
-    return validation;
-  };
-
-  const formSchema = z.object(
-    config.reduce<z.ZodRawShape>(
-      (acc, field) => ({
-        ...acc,
-        [field.name]: getFieldValidation(field),
-      }),
-      {}
-    )
-  );
-
   const form = useForm<TFieldValues>({
     defaultValues: initialValues,
-    resolver: zodResolver(formSchema) as Resolver<TFieldValues>,
+    mode: "onChange",
+    resolver: zodResolver(
+      new ZodValidator().generateSchema(config)
+    ) as Resolver<TFieldValues>,
   });
 
   const registry = useRef<FormRegistryContextType<TFieldValues>["registry"]>(
