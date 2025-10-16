@@ -2,13 +2,22 @@
 
 import { Form } from "@/components/ui/form";
 import { createContext, useCallback, useRef } from "react";
-import { FieldPath, FieldValues, Path, useForm } from "react-hook-form";
+import {
+  Control,
+  DefaultValues,
+  FieldPath,
+  FieldValues,
+  Path,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
+
 import { FormItemComponent } from "./FormComponent";
 import { FormFieldConfig } from "./types";
 
 type Props<TFieldValues extends FieldValues> = {
   config: (Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> })[];
-  onSubmit?: (values: TFieldValues) => void;
+  onSubmit?: SubmitHandler<TFieldValues>;
   adapter?: Record<
     string,
     React.ComponentType<{
@@ -17,9 +26,9 @@ type Props<TFieldValues extends FieldValues> = {
       [key: string]: unknown;
     }>
   >;
+  initialValues?: DefaultValues<TFieldValues>;
 };
 
-//Todo: Fix the types to work seamlessly with the react hook form
 type FormRegistryContextType<TFieldValues extends FieldValues> = {
   register?: (
     name: Path<TFieldValues>,
@@ -51,14 +60,17 @@ export function FormGenerator<TFieldValues extends FieldValues>({
   onSubmit,
   children,
   adapter,
+  initialValues,
 }: React.PropsWithChildren<Props<TFieldValues>>) {
-  const form = useForm<TFieldValues>();
+  const form = useForm<TFieldValues>({
+    defaultValues: initialValues,
+  });
 
   const registry = useRef<FormRegistryContextType<TFieldValues>["registry"]>(
     {} as FormRegistryContextType<TFieldValues>["registry"]
   );
 
-  const handleSubmit = (values: TFieldValues) => {
+  const handleSubmit: SubmitHandler<TFieldValues> = (values) => {
     if (onSubmit) {
       onSubmit(values);
     }
@@ -108,7 +120,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
           {config.map((field) => (
             <FormItemComponent
               key={field.name}
-              control={form.control}
+              control={form.control as Control<TFieldValues>}
               config={field}
             />
           ))}

@@ -12,7 +12,7 @@ export function ExampleForm() {
     console.log(values);
   };
   return (
-    <FormGenerator config={config} onSubmit={handleSubmit}>
+    <FormGenerator config={config} onSubmit={handleSubmit} initialValues={sampleInitialValues}>
       <div className="flex">
         <Button type="submit" className="w-full sm:w-auto">
           Submit
@@ -21,3 +21,21 @@ export function ExampleForm() {
     </FormGenerator>
   );
 }
+
+export const sampleInitialValues = {
+  name: "John Doe",
+  contactDetails: [
+    {
+      email: "john@example.com",
+      phone: "123-456-7890",
+      socialMedia: [
+        {
+          platform: "ui",
+        },
+      ],
+    },
+  ],
+  satisfaction: "4",
+  improvements: "ui",
+  subscribe: true,
+};

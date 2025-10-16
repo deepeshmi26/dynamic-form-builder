@@ -6,6 +6,44 @@
     "placeholder": "Enter your name"
   },
   {
+    "name": "contactDetails",
+    "label": "Contact Details",
+    "type": "ARRAY",
+    "structure": [
+      {
+        "name": "email",
+        "label": "Email",
+        "type": "TEXT",
+        "placeholder": "Enter your email"
+      },
+      {
+        "name": "phone",
+        "label": "Phone",
+        "type": "TEXT",
+        "placeholder": "Enter your phone number"
+      },
+      {
+        "name": "socialMedia",
+        "label": "Social Media",
+        "type": "ARRAY",
+        "structure": [
+          {
+            "name": "platform",
+            "label": "Platform",
+            "type": "SELECT",
+            "placeholder": "Select platform",
+            "options": [
+              { "value": "ui", "label": "UI" },
+              { "value": "ux", "label": "UX" },
+              { "value": "dev", "label": "Development" },
+              { "value": "design", "label": "Design" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "satisfaction",
     "label": "How satisfied are you?",
     "type": "RADIO",

@@ -16,6 +16,7 @@ import { RadioGroupFormItem } from "./FormItems/RadioGroupFormItem";
 import { SelectFormItem } from "./FormItems/SelectFormItem";
 import { TextFormItem } from "./FormItems/TextFormItem";
 import { FormFieldConfig, FormItemType, StringOption } from "./types";
+import { ArrayFormItem } from "./FormItems/ArrayFormItem";
 
 type Props<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
@@ -25,7 +26,8 @@ type Props<TFieldValues extends FieldValues> = {
 export function FormItemComponent<TFieldValues extends FieldValues>({
   control,
   config,
-}: Props<TFieldValues>) {
+  path,
+}: Props<TFieldValues> & { path?: string }) {
   const [state, setState] = useState<FieldValues[keyof FieldValues]>(config);
   const name = config.name;
   const label = state.label;
@@ -67,6 +69,8 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
               placeholder={state.placeholder}
             />
           );
+        case FormItemType.ARRAY:
+          return <ArrayFormItem name={name} structure={state.structure} path={path ?? ""} />;
         case FormItemType.CHECKBOX:
           return (
             <CheckboxFormItem

@@ -3,6 +3,7 @@ export enum FormItemType {
   CHECKBOX = "CHECKBOX",
   RADIO = "RADIO",
   TEXT = "TEXT",
+  ARRAY = "ARRAY",
 }
 
 export type FormOption = {
