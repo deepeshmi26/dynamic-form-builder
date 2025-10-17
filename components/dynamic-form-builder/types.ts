@@ -46,6 +46,7 @@ export type FormFieldConfig = {
   options?: FormOption[];
   placeholder?: string;
   validation?: Record<string, unknown>;
+  visible?: boolean;
   required?: boolean;
   structure?: FormFieldConfig[];
   classNames?: {
