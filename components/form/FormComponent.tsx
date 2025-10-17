@@ -134,7 +134,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           name={name}
           render={({ field }) => (
             <FormItem className={cn("space-y-2 sm:space-y-3", "")}>
-              <FormLabel className={cn("text-sm sm:text-base", "")}>
+              <FormLabel required={state.required} className={cn("text-sm sm:text-base", "")}>
                 {label}
               </FormLabel>
               <FormControl>

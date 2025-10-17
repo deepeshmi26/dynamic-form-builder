@@ -93,6 +93,10 @@ export class AjvValidator implements IValidator<object> {
       schema.minLength = 1;
     }
 
+    if (field.validation?.minLength) {
+      schema.minLength = field.validation.minLength;
+    }
+
     return schema;
   }
 

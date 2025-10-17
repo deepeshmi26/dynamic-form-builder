@@ -17,11 +17,7 @@ export type FormFieldConfig = {
   type: FormItemType;
   options?: FormOption[];
   placeholder?: string;
-  validation?: {
-    min?: number;
-    max?: number;
-    pattern?: string;
-  };
+  validation?: Record<string, unknown>;
   required?: boolean;
   structure?: FormFieldConfig[];
   onConditionMatch?: {
