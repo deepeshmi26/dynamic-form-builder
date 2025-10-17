@@ -5,33 +5,34 @@ import { Control, FieldValues, Path } from "react-hook-form";
 import { FormField } from "./FormField";
 import { useFormBuilder } from "./hooks/useFormBuilder";
 import { FormRegistryContext } from "./hooks/useFormRegistryContext";
-import { FormFieldConfig, FormGenratorProps } from "./types";
+import {
+  FormFieldConfig,
+  FormProps,
+  FormRegistryContext as FormRegistryContextType,
+} from "./types";
 import { cn } from "@/lib/utils";
 
-export function FormBuilder<TFieldValues extends FieldValues>(
-  props: React.PropsWithChildren<FormGenratorProps<TFieldValues>>
+export function FormBuilder<T extends FieldValues>(
+  props: React.PropsWithChildren<FormProps<T>>
 ) {
-  const { form, handleSubmit, contextValue } =
-    useFormBuilder<TFieldValues>(props);
+  const { form, handleSubmit, contextValue } = useFormBuilder<T>(props);
   const { formConfig: config, children } = props;
   const { settings } = config;
   const layout = settings?.layout || "vertical";
 
   return (
     <Form {...form}>
-      <FormRegistryContext.Provider value={contextValue}>
+      <FormRegistryContext.Provider
+        value={contextValue as FormRegistryContextType<FieldValues>}
+      >
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <div className={cn("space-y-4", settings?.className)}>
             {config.fields?.map((field: FormFieldConfig) => (
               <FormField
                 key={field.name}
-                settings={settings}
-                control={form.control as Control<TFieldValues>}
-                field={
-                  field as Omit<FormFieldConfig, "name"> & {
-                    name: Path<TFieldValues>;
-                  }
-                }
+                settings={settings || {}}
+                control={form.control as Control<T>}
+                field={field as FormFieldConfig & { name: Path<T> }}
               />
             ))}
           </div>

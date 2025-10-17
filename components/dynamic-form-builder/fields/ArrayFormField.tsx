@@ -24,7 +24,7 @@ export function ArrayFormField({ name, structure, path }: Props) {
           {structure.map((item) => (
             <FormField
               key={`${name}.${index}.${item.name}`}
-              settings={undefined}
+              settings={{}}
               control={control}
               field={{ ...item, name: `${name}.${index}.${item.name}` }}
             />

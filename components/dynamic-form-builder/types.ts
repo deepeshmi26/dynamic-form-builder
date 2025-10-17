@@ -5,6 +5,7 @@ import {
   Path,
   SubmitHandler,
 } from "react-hook-form";
+
 export enum FormItemType {
   SELECT = "SELECT",
   CHECKBOX = "CHECKBOX",
@@ -22,17 +23,19 @@ export type FormOption = {
   disabled?: boolean;
 };
 
+export type FormSettings = {
+  layout?: "vertical" | "horizontal";
+  className?: string;
+  defaultClassNames?: {
+    body?: string;
+    label?: string;
+    field?: string;
+  };
+};
+
 export type FormConfig = {
   label?: string;
-  settings?: {
-    layout?: "vertical" | "horizontal";
-    className?: string; // Applied to the fields container
-    defaultClassNames?: {
-      body?: string; // Applied to all field containers by default
-      label?: string; // Applied to all field labels by default
-      field?: string; // Applied to all field inputs by default
-    };
-  };
+  settings?: FormSettings;
   fields?: FormFieldConfig[];
 };
 
@@ -46,87 +49,52 @@ export type FormFieldConfig = {
   required?: boolean;
   structure?: FormFieldConfig[];
   classNames?: {
-    body?: string; // Applied to the container containing label & field
-    label?: string; // Applied only on the label
-    field?: string; // Applied only on the field
+    body?: string;
+    label?: string;
+    field?: string;
   };
   onConditionMatch?: {
     if: {
-      properties: {
-        [key: string]: {
-          const: string;
-        };
-      };
+      properties: Record<string, { const: string }>;
     };
     then?: Record<string, Partial<FormFieldConfig>>;
     else?: Record<string, Partial<FormFieldConfig>>;
   }[];
 };
 
-export type FormGenratorProps<TFieldValues extends FieldValues> = {
+export type FormProps<T extends FieldValues> = {
   formConfig: FormConfig;
-  onSubmit?: SubmitHandler<TFieldValues>;
-  adapter?: Record<
-    string,
-    React.ComponentType<{
-      value?: unknown;
-      name?: string;
-      structure?: FormFieldConfig[];
-      path?: string;
-      onChange?: (value: unknown) => void;
-      [key: string]: unknown;
-    }>
-  >;
-  initialValues?: DefaultValues<TFieldValues>;
-  onChange?: (
-    fieldName: string,
-    value: unknown,
-    allValues: TFieldValues
-  ) => void;
+  onSubmit?: SubmitHandler<T>;
+  adapter?: Record<string, React.ComponentType<Record<string, unknown>>>;
+  initialValues?: DefaultValues<T>;
+  onChange?: (fieldName: string, value: unknown, allValues: T) => void;
   registerOnChangeRecord?: (fieldConfig: FormFieldConfig) => void;
 };
 
-export type RegistryEntry<TFieldValues extends FieldValues> = {
-  config: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> };
-  initialConfig: Omit<FormFieldConfig, "name"> & {
-    name: FieldPath<TFieldValues>;
-  };
+export type RegistryEntry<T extends FieldValues> = {
+  config: FormFieldConfig & { name: FieldPath<T> };
+  initialConfig: FormFieldConfig & { name: FieldPath<T> };
   setState: (state: unknown) => void;
 };
 
-export type ChangeRule<TFieldValues extends FieldValues> = {
+export type ChangeRule<T extends FieldValues> = {
   if: object;
   then: Record<string, Partial<FormFieldConfig>>;
   else: Record<string, Partial<FormFieldConfig>>;
-  target: Path<TFieldValues>;
+  target: Path<T>;
 };
 
-export type FormRegistryContextType<TFieldValues extends FieldValues> = {
+export type FormRegistryContext<T extends FieldValues> = {
   register?: (
-    name: Path<TFieldValues>,
-    config: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> },
-    setStateCall: (state: TFieldValues[keyof TFieldValues]) => void
+    name: string,
+    config: FormFieldConfig & { name: string },
+    setStateCall: (state: unknown) => void
   ) => void;
-  unregister?: (name: Path<TFieldValues>) => void;
-  registry?: Record<string, RegistryEntry<TFieldValues>>;
-  onChangeRecord?: Record<string, ChangeRule<TFieldValues>[]>;
+  unregister?: (name: string) => void;
+  registry?: Record<string, RegistryEntry<T>>;
+  onChangeRecord?: Record<string, ChangeRule<T>[]>;
   registerOnChangeRecord?: (fieldConfig: FormFieldConfig) => void;
-  updateState?: (
-    newConfig: Omit<FormFieldConfig, "name"> & {
-      name: string;
-    }
-  ) => void;
-  adapter?: Record<
-    string,
-    React.ComponentType<{
-      value?: unknown;
-      onChange?: (value: unknown) => void;
-      [key: string]: unknown;
-    }>
-  >;
-  onChange?: (
-    fieldName: string,
-    value: unknown,
-    allValues: TFieldValues
-  ) => void;
+  updateState?: (newConfig: FormFieldConfig & { name: string }) => void;
+  adapter?: Record<string, React.ComponentType<Record<string, unknown>>>;
+  onChange?: (fieldName: string, value: unknown, allValues: T) => void;
 };

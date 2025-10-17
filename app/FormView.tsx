@@ -4,7 +4,10 @@ import { FormBuilder } from "@/components/dynamic-form-builder/FormBuilder";
 import { Button } from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
 import { ArrayInlineAdapter } from "./Adapter";
-import { FormConfig } from "@/components/dynamic-form-builder/types";
+import {
+  FormConfig,
+  FormFieldConfig,
+} from "@/components/dynamic-form-builder/types";
 
 export function FormView({ config }: { config: FormConfig }) {
   const handleSubmit = (values: FieldValues) => {
@@ -23,7 +26,11 @@ export function FormView({ config }: { config: FormConfig }) {
   return (
     <FormBuilder
       adapter={{
-        ARRAY_INLINE: (props) => {
+        ARRAY_INLINE: (props: {
+          name?: string;
+          structure?: FormFieldConfig[];
+          path?: string;
+        }) => {
           return (
             <ArrayInlineAdapter
               name={props.name || ""}

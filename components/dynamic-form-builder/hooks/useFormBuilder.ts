@@ -16,8 +16,8 @@ import { AjvValidator } from "../validator/AjvValidator";
 import {
   ChangeRule,
   FormFieldConfig,
-  FormGenratorProps,
-  FormRegistryContextType,
+  FormProps,
+  FormRegistryContext,
   RegistryEntry,
 } from "../types";
 import { debounce } from "lodash";
@@ -25,30 +25,26 @@ import { debounce } from "lodash";
 const FormResolver = ajvResolver;
 const Validator = new AjvValidator();
 
-export function useFormBuilder<TFieldValues extends FieldValues>({
+export function useFormBuilder<T extends FieldValues>({
   formConfig,
   onSubmit,
   adapter,
   initialValues,
   onChange,
-}: FormGenratorProps<TFieldValues>) {
+}: FormProps<T>) {
   const fields = formConfig.fields;
-  const form = useForm<TFieldValues>({
+  const form = useForm<T>({
     defaultValues: initialValues,
     mode: "onChange",
     resolver: FormResolver(
-      Validator.generateSchema(fields || []) as JSONSchemaType<unknown>
-    ) as Resolver<TFieldValues>,
+      Validator.generateSchema(fields || []) as JSONSchemaType<T>
+    ) as Resolver<T>,
   });
 
-  const registry = useRef<FormRegistryContextType<TFieldValues>["registry"]>(
-    {}
-  );
-  const onChangeRecord = useRef<
-    FormRegistryContextType<TFieldValues>["onChangeRecord"]
-  >({});
+  const registry = useRef<FormRegistryContext<T>["registry"]>({});
+  const onChangeRecord = useRef<FormRegistryContext<T>["onChangeRecord"]>({});
 
-  const handleSubmit: SubmitHandler<TFieldValues> = (values) => {
+  const handleSubmit: SubmitHandler<T> = (values) => {
     if (onSubmit) onSubmit(values);
   };
 
@@ -78,7 +74,7 @@ export function useFormBuilder<TFieldValues extends FieldValues>({
             if: rule.if || {},
             then: rule.then || {},
             else: rule.else || {},
-            target: name as Path<TFieldValues>,
+            target: name as Path<T>,
           });
         });
       });
@@ -87,7 +83,7 @@ export function useFormBuilder<TFieldValues extends FieldValues>({
   );
 
   const unregister = useCallback(
-    (name: Path<TFieldValues>) => {
+    (name: Path<T>) => {
       if (registry.current?.[name]) delete registry.current[name as string];
       if (onChangeRecord.current?.[name])
         delete onChangeRecord.current[name as string];
@@ -99,19 +95,15 @@ export function useFormBuilder<TFieldValues extends FieldValues>({
     (
       name: string,
       fieldConfig: Omit<FormFieldConfig, "name"> & { name: string },
-      setStateCall: (state: TFieldValues[keyof TFieldValues]) => void
+      setStateCall: (state: T[keyof T]) => void
     ) => {
       if (!registry.current) return;
       registerOnChangeRecord(fieldConfig);
       registry.current[name as string] = {
-        config: fieldConfig as Omit<FormFieldConfig, "name"> & {
-          name: FieldPath<TFieldValues>;
-        },
+        config: fieldConfig as FormFieldConfig & { name: FieldPath<T> },
         setState: setStateCall,
-        initialConfig: fieldConfig as Omit<FormFieldConfig, "name"> & {
-          name: FieldPath<TFieldValues>;
-        },
-      } as TFieldValues[keyof TFieldValues];
+        initialConfig: fieldConfig as FormFieldConfig & { name: FieldPath<T> },
+      } as T[keyof T];
     },
     [registerOnChangeRecord]
   );
@@ -123,35 +115,33 @@ export function useFormBuilder<TFieldValues extends FieldValues>({
       const validator = Validator;
       const collectedChange: Record<string, Partial<FormFieldConfig>> = {};
 
-      onChangeRecord.current[fieldName].forEach(
-        (rule: ChangeRule<TFieldValues>) => {
-          const { isValid } = validator.validate(rule.if, allValues);
-          if (isValid) {
-            Object.keys(rule.then).forEach((key) => {
+      onChangeRecord.current[fieldName].forEach((rule: ChangeRule<T>) => {
+        const { isValid } = validator.validate(rule.if, allValues);
+        if (isValid) {
+          Object.keys(rule.then).forEach((key) => {
+            collectedChange[key] = mergeDeep(
+              collectedChange[key] as Record<string, unknown>,
+              rule.then[key] as Record<string, unknown>
+            );
+          });
+        } else {
+          if (Object.keys(rule.else || {}).length > 0) {
+            Object.keys(rule.else).forEach((key) => {
               collectedChange[key] = mergeDeep(
                 collectedChange[key] as Record<string, unknown>,
-                rule.then[key] as Record<string, unknown>
+                rule.else[key] as Record<string, unknown>
               );
             });
           } else {
-            if (Object.keys(rule.else || {}).length > 0) {
-              Object.keys(rule.else).forEach((key) => {
-                collectedChange[key] = mergeDeep(
-                  collectedChange[key] as Record<string, unknown>,
-                  rule.else[key] as Record<string, unknown>
-                );
-              });
-            } else {
-              Object.keys(rule.then).forEach((key) => {
-                const target = registry.current?.[key];
-                if (target?.initialConfig) {
-                  collectedChange[key] = target.initialConfig;
-                }
-              });
-            }
+            Object.keys(rule.then).forEach((key) => {
+              const target = registry.current?.[key];
+              if (target?.initialConfig) {
+                collectedChange[key] = target.initialConfig;
+              }
+            });
           }
         }
-      );
+      });
 
       Object.keys(collectedChange).forEach((targetFieldName) => {
         const target = registry.current?.[targetFieldName];
@@ -185,23 +175,21 @@ export function useFormBuilder<TFieldValues extends FieldValues>({
     form,
     handleSubmit,
     contextValue: {
-      registry: registry.current as Record<string, RegistryEntry<FieldValues>>,
+      registry: registry.current as Record<string, RegistryEntry<T>>,
       register: register as unknown as (
-        name: Path<FieldValues>,
-        config: Omit<FormFieldConfig, "name"> & {
-          name: FieldPath<FieldValues>;
-        },
-        setStateCall: (state: FieldValues[keyof FieldValues]) => void
+        name: string,
+        config: FormFieldConfig & { name: string },
+        setStateCall: (state: unknown) => void
       ) => void,
       adapter: { ...(adapter || {}) },
-      unregister: unregister as unknown as (name: Path<FieldValues>) => void,
+      unregister: unregister as unknown as (name: string) => void,
       updateState: updateState as unknown as (
-        newConfig: Omit<FormFieldConfig, "name"> & { name: string }
+        newConfig: FormFieldConfig & { name: string }
       ) => void,
       onChange: handleGlobalChange as unknown as (
         fieldName: string,
         value: unknown,
-        allValues: FieldValues
+        allValues: T
       ) => void,
       registerOnChangeRecord: registerOnChangeRecord as unknown as (
         fieldConfig: FormFieldConfig
@@ -210,6 +198,6 @@ export function useFormBuilder<TFieldValues extends FieldValues>({
         string,
         ChangeRule<FieldValues>[]
       >,
-    },
+    } as FormRegistryContext<T>,
   } as const;
 }
