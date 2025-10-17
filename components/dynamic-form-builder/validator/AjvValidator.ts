@@ -147,10 +147,19 @@ export class AjvValidator {
         (err.params as { missingProperty?: string })?.missingProperty ||
         "";
 
+      const instancePath =
+        err.instancePath
+          ?.replace(/^\//, "")
+          ?.split("/")
+          .filter((part) => isNaN(Number(part)))
+          .join("/") ||
+        (err.params as { missingProperty?: string })?.missingProperty ||
+        "";
+
       if (!path) continue;
 
       const message =
-        this.labelMapping[path] + " " + err.message || "Invalid value";
+        this.labelMapping[instancePath] + " " + err.message || "Invalid value";
       const errorObj = {
         type: err.keyword,
         message: message,
