@@ -25,7 +25,6 @@ export type FormOption = {
 export type FormConfig = {
   label?: string;
   settings?: {
-    enabledebounce: boolean;
     layout?: "vertical" | "horizontal";
     className?: string; // Applied to the fields container
     defaultClassNames?: {

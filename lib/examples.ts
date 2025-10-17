@@ -2,7 +2,6 @@ export const FORM_EXAMPLES = {
   contact: {
     label: "Simple Contact Form",
     settings: {
-      enabledebounce: true,
       layout: "vertical",
       className: "bg-gray-50 p-6 rounded-lg",
       defaultClassNames: {
