@@ -102,6 +102,13 @@ export function FormField<TFieldValues extends FieldValues>({
         return <Component value={field.value} onChange={handleChange} />;
       }
       switch (state.type) {
+        case FormItemType.BOOLEAN:
+          return (
+            <CheckboxFormField
+              value={Boolean(field.value)}
+              onChange={handleChange as (v: boolean) => void}
+            />
+          );
         case FormItemType.TEXT:
           return (
             <TextFormField
@@ -152,21 +159,13 @@ export function FormField<TFieldValues extends FieldValues>({
             />
           );
         case FormItemType.CHECKBOX:
-          if (Array.isArray(state.options) && state.options.length > 0) {
-            return (
-              <CheckboxGroupFormField
-                value={
-                  Array.isArray(field.value) ? (field.value as string[]) : []
-                }
-                onChange={handleChange as (v: string[]) => void}
-                options={(state.options || []) as FormOption[]}
-              />
-            );
-          }
           return (
-            <CheckboxFormField
-              value={Boolean(field.value)}
-              onChange={handleChange as (v: boolean) => void}
+            <CheckboxGroupFormField
+              value={
+                Array.isArray(field.value) ? (field.value as string[]) : []
+              }
+              onChange={handleChange as (v: string[]) => void}
+              options={(state.options || []) as FormOption[]}
             />
           );
         default:

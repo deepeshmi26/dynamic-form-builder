@@ -183,7 +183,7 @@ export const FORM_EXAMPLES = {
       {
         name: "terms",
         label: "I agree to receive marketing emails",
-        type: "CHECKBOX",
+        type: "BOOLEAN",
         required: true,
       },
     ],

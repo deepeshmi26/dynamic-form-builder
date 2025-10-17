@@ -8,6 +8,7 @@ import {
 export enum FormItemType {
   SELECT = "SELECT",
   CHECKBOX = "CHECKBOX",
+  BOOLEAN = "BOOLEAN",
   RADIO = "RADIO",
   TEXT = "TEXT",
   TEXTAREA = "TEXTAREA",
