@@ -157,6 +157,7 @@ export function useFormBuilder<T extends FieldValues>({
           currentConfig as Record<string, unknown>,
           collectedChange[targetFieldName] as Record<string, unknown>
         );
+        registry.current![targetFieldName].config = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
         target.setState(mergedConfig); // Apply merged configuration to target field
       });
     },

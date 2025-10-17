@@ -91,7 +91,7 @@ export function FormField<T extends FieldValues>({
   const {
     register,
     adapter,
-    onChange: globalChangeListener,
+    onChange,
     unregister,
   } = useFormRegistryContext<FieldValues>();
   const form = useFormContext();
@@ -107,9 +107,9 @@ export function FormField<T extends FieldValues>({
     (field: { value: unknown; onChange: (value: unknown) => void }) => {
       const handleChange = (value: unknown) => {
         field.onChange(value);
-        if (globalChangeListener) {
+        if (onChange) {
           const allValues = form.getValues();
-          globalChangeListener(name, value, allValues);
+          onChange(name, value, allValues);
         }
       };
       if (adapter?.[state.type]) {
@@ -189,7 +189,7 @@ export function FormField<T extends FieldValues>({
           return null;
       }
     },
-    [adapter, form, globalChangeListener, name, path, state]
+    [adapter, form, onChange, name, path, state]
   );
   return (
     <>
