@@ -5,7 +5,7 @@ import { FormFieldConfig } from "@/components/dynamic-form-builder/types";
 import { Button } from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
 
-export function ExampleForm({ config }: { config: FormFieldConfig[] }) {
+export function FormView({ config }: { config: FormFieldConfig[] }) {
   const handleSubmit = (values: FieldValues) => {
     console.log(values);
   };

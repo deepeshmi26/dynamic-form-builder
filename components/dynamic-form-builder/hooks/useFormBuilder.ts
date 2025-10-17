@@ -3,7 +3,7 @@
 import { mergeDeep } from "@/lib/utils";
 import { ajvResolver } from "@hookform/resolvers/ajv";
 import { JSONSchemaType } from "ajv";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import {
   FieldPath,
   FieldValues,
@@ -20,6 +20,7 @@ import {
   FormRegistryContextType,
   RegistryEntry,
 } from "../types";
+import { debounce } from "lodash";
 
 const FormResolver = ajvResolver;
 const Validator = new AjvValidator();
@@ -114,15 +115,13 @@ export function useFormBuilder<TFieldValues extends FieldValues>({
     [registerOnChangeRecord]
   );
 
-  const handleGlobalChange = useCallback(
-    (fieldName: string, value: unknown) => {
-      const allValues = form.getValues();
-      if (onChange) onChange(fieldName, value, allValues);
-
-      const validator = Validator;
+  const runOnChangeConditions = useCallback(
+    (fieldName: string, allValues: unknown) => {
       if (!onChangeRecord.current || !onChangeRecord.current[fieldName]) return;
 
+      const validator = Validator;
       const collectedChange: Record<string, Partial<FormFieldConfig>> = {};
+
       onChangeRecord.current[fieldName].forEach(
         (rule: ChangeRule<TFieldValues>) => {
           const { isValid } = validator.validate(rule.if, allValues);
@@ -165,7 +164,20 @@ export function useFormBuilder<TFieldValues extends FieldValues>({
         target.setState(mergedConfig);
       });
     },
-    [onChange, form]
+    [registry]
+  );
+
+  const debouncedRunOnChangeConditions = useMemo(() => {
+    return debounce(runOnChangeConditions, 800);
+  }, [runOnChangeConditions]);
+
+  const handleGlobalChange = useCallback(
+    (fieldName: string, value: unknown) => {
+      const allValues = form.getValues();
+      if (onChange) onChange(fieldName, value, allValues);
+      debouncedRunOnChangeConditions(fieldName, allValues);
+    },
+    [onChange, form, debouncedRunOnChangeConditions]
   );
 
   return {

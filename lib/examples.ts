@@ -1,6 +1,9 @@
 export const FORM_EXAMPLES = {
   contact: {
     label: "Simple Contact Form",
+    settings: {
+        enabledebounce: true,
+    },
     value: [
       {
         name: "name",

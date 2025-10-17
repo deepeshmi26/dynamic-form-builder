@@ -21,6 +21,9 @@ Shadcn works well with Nextjs. Nextjs gives out of box support for shadcn and ta
     2. [ ] Add support for validating nested fields and updatin nested fields.
 9. [X] Add JSON editor support
     1. [ ] Support validation for valid json using zod or ajv.
+1. [X] Handle performance
+     1. [X] Make form fields to load dynamically
+     2. [X] Make use of debounce to run conditional validations.
 1. [X] Add validation support. Create classes to enable easy sitiching beteen validation libraries.
 1. [ ] Add more validation support if using zod.
 1. [ ] Add more field supports e.g. upload, date etc.
@@ -30,7 +33,8 @@ Shadcn works well with Nextjs. Nextjs gives out of box support for shadcn and ta
      2. [ ] Make use of adapter pattern at the top most level to enable making use of a set of patterns for the entire application
      3. [ ] Enable extending label to support reactNode
      4. [ ] Enable semantic styling for the entire form
-15. [ ]
+16. [ ]
+17. [ ]
 
 ### Similarity between Antd form and React hook Form
 

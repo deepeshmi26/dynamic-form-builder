@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import { ExampleForm } from "./ExampleForm";
+import { FormView } from "./FormView";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -51,7 +51,7 @@ export default function Home() {
         <div className="w-1/2 bg-white p-6 overflow-y-auto">
           <h1 className="text-3xl font-bold">Form Preview</h1>
           <div className="pt-6">
-            <ExampleForm config={config} />
+            <FormView config={config} />
           </div>
         </div>
       </div>
@@ -60,7 +60,7 @@ export default function Home() {
       <div className="lg:hidden p-6 overflow-y-auto">
         <h1 className="text-3xl font-bold mt-16">Form Preview</h1>
         <div className="pt-6">
-          <ExampleForm config={config} />
+          <FormView config={config} />
         </div>
       </div>
     </div>
