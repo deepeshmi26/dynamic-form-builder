@@ -111,7 +111,7 @@ export function useFormBuilder<T extends FieldValues>({
     [registerOnChangeRecord]
   );
 
-  // Run conditional field dependencies by validating the conditions in the onChangeRecord 
+  // Run conditional field dependencies by validating the conditions in the onChangeRecord
   // and applying the changes to the target fields.
   const runOnChangeConditions = useCallback(
     (fieldName: string, allValues: unknown) => {

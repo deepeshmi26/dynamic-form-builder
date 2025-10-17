@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { FORM_EXAMPLES } from "@/lib/examples";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import { FormView } from "./FormView";
+import { FormView } from "./component/FormView";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -16,12 +16,12 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen">
-      {/* Mobile Drawer */}
-      <div className="lg:hidden">
+    <div className="h-screen flex flex-col lg:flex-row">
+      {/* Mobile Menu Button */}
+      <div className="lg:hidden fixed top-4 left-4 z-50">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="fixed top-4 left-4">
+            <Button variant="ghost" size="icon">
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
@@ -29,8 +29,7 @@ export default function Home() {
             side="left"
             className="w-[90%] bg-black p-6 h-full max-h-screen"
           >
-            <h1 className="text-3xl font-bold text-white">JSON Editor</h1>
-
+            <h1 className="text-3xl font-bold text-white mb-6">JSON Editor</h1>
             <JsonEditor
               onValidJson={(json) => {
                 handleValidJson(json as FormConfig);
@@ -42,27 +41,22 @@ export default function Home() {
         </Sheet>
       </div>
 
-      {/* Desktop Layout */}
-      <div className="hidden lg:flex h-full">
-        <div className="w-1/2 bg-black p-6 overflow-hidden h-full max-h-screen">
-          <h1 className="text-3xl font-bold text-white">JSON Editor</h1>
+      {/* JSON Editor - Hidden on mobile, visible on desktop */}
+      <div className="hidden lg:flex lg:w-1/2 bg-black p-6 overflow-hidden h-full max-h-screen">
+        <div className="w-full">
+          <h1 className="text-3xl font-bold text-white mb-6">JSON Editor</h1>
           <JsonEditor
             onValidJson={handleValidJson}
             formSamples={FORM_EXAMPLES}
           />
         </div>
-
-        <div className="w-1/2 bg-white p-6 overflow-y-auto">
-          <h1 className="text-3xl font-bold">Form Preview</h1>
-          <div className="pt-6">
-            <FormView config={formConfig} />
-          </div>
-        </div>
       </div>
 
-      {/* Mobile Form Preview */}
-      <div className="lg:hidden p-6 overflow-y-auto">
-        <h1 className="text-3xl font-bold mt-16">Form Preview</h1>
+      {/* Form Preview - Always visible */}
+      <div className="flex-1 bg-white p-6 overflow-y-auto lg:w-1/2">
+        <h1 className="text-3xl font-bold lg:mb-6 mt-16 lg:mt-0">
+          Form Preview
+        </h1>
         <div className="pt-6">
           <FormView config={formConfig} />
         </div>

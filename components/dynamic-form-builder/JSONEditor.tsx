@@ -93,7 +93,7 @@ export function JsonEditor({
                   <SelectContent>
                     {Object.entries(FORM_EXAMPLES).map(([key, example]) => (
                       <SelectItem key={key} value={key}>
-                        {example.label}
+                        {(example as FormConfig).label}
                       </SelectItem>
                     ))}
                   </SelectContent>
