@@ -1,5 +1,5 @@
 "use client";
-import { JsonEditor } from "@/components/dynamic-form-builder/JsonEditor";
+import { JsonEditor } from "@/components/dynamic-form-builder/JSONEditor";
 import { FormFieldConfig } from "@/components/dynamic-form-builder/types";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
