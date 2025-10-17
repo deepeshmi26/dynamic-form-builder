@@ -86,6 +86,31 @@ export const FORM_EXAMPLES = {
         },
       },
       {
+        name: "socialHandles",
+        label: "Social media handles",
+        type: "ARRAY_INLINE",
+        structure: [
+          {
+            name: "platform",
+            label: "Platform",
+            type: "SELECT",
+            placeholder: "Select platform",
+            options: [
+              { value: "linkedin", label: "LinkedIn" },
+              { value: "instagram", label: "Instagram" },
+            ],
+            required: true,
+          },
+          {
+            name: "url",
+            label: "Profile URL",
+            type: "TEXT",
+            placeholder: "Enter the profile URL",
+            required: true,
+          },
+        ],
+      },
+      {
         name: "message",
         label: "Message",
         type: "TEXTAREA",

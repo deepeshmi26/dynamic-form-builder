@@ -51,6 +51,9 @@ export type FormGenratorProps<TFieldValues extends FieldValues> = {
     string,
     React.ComponentType<{
       value?: unknown;
+      name?: string;
+      structure?: FormFieldConfig[];
+      path?: string;
       onChange?: (value: unknown) => void;
       [key: string]: unknown;
     }>

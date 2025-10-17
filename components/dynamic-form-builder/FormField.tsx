@@ -99,7 +99,9 @@ export function FormField<TFieldValues extends FieldValues>({
       };
       if (adapter?.[state.type]) {
         const Component = adapter[state.type];
-        return <Component value={field.value} onChange={handleChange} />;
+        return (
+          <Component {...state} value={field.value} onChange={handleChange} />
+        );
       }
       switch (state.type) {
         case FormItemType.BOOLEAN:
@@ -172,17 +174,7 @@ export function FormField<TFieldValues extends FieldValues>({
           return null;
       }
     },
-    [
-      adapter,
-      form,
-      globalChangeListener,
-      name,
-      path,
-      state.options,
-      state.placeholder,
-      state.structure,
-      state.type,
-    ]
+    [adapter, form, globalChangeListener, name, path, state]
   );
   return (
     <>
