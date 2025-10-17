@@ -113,8 +113,8 @@ export function FormField<T extends FieldValues>({
         }
       };
       const placeholder = typeof label === 'string' ? `Enter ${label}` : (typeof state.alternateLabel === 'string' ? `Enter ${state.alternateLabel}` : undefined);
-      if (adapter?.[state.type]) {
-        const Component = adapter[state.type];
+      if (adapter?.[state.renderComponent || state.type]) {
+        const Component = adapter[state.renderComponent || state.type];
         return (
           <Component {...state} placeholder={placeholder} value={field.value} onChange={handleChange} />
         );

@@ -10,7 +10,7 @@ type Props = {
 
 export function ArrayFormField({ name, structure, path }: Props) {
   const { control } = useFormContext();
-  name = `${path}.${name}`;
+  name = path.length > 0 ? `${path}.${name}` : name;
   const { fields, append, remove } = useFieldArray({
     control,
     name: name,
@@ -27,6 +27,7 @@ export function ArrayFormField({ name, structure, path }: Props) {
               settings={{}}
               control={control}
               field={{ ...item, name: `${name}.${index}.${item.name}` }}
+              path={`${name}.${index}`}
             />
           ))}
           <button type="button" onClick={() => remove(index)}>
