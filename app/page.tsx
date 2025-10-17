@@ -1,16 +1,16 @@
 "use client";
-import { JsonEditor } from "@/components/dynamic-form-builder/JSONEditor";
-import { ExampleForm } from "./ExampleForm";
+import { JsonEditor } from "@/components/dynamic-form-builder/JsonEditor";
+import { FormFieldConfig } from "@/components/dynamic-form-builder/types";
+import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { FormFieldConfig } from "@/components/dynamic-form-builder/types";
+import { ExampleForm } from "./ExampleForm";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
   const [config, setConfig] = useState<FormFieldConfig[]>([]);
-  const handleValidJson = (json: any) => {
+  const handleValidJson = (json: FormFieldConfig[]) => {
     console.log(json);
     setConfig(json);
   };
