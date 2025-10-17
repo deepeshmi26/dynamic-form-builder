@@ -8,14 +8,21 @@ import {
   FormField as RHFFormField,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { useCallback, useEffect, useState } from "react";
 import {
   Control,
   FieldPath,
   FieldValues,
   useFormContext,
 } from "react-hook-form";
+import { useFormRegistryContext } from "./hooks/useFormRegistryContext";
+import {
+  FormFieldConfig,
+  FormItemType,
+  FormOption,
+  FormSettings,
+} from "./types";
 const ArrayFormField = dynamic(
   () => import("./fields/ArrayFormField").then((m) => m.ArrayFormField),
   { ssr: false }
@@ -52,13 +59,6 @@ const DateFormField = dynamic(
   () => import("./fields/DateFormField").then((m) => m.DateFormField),
   { ssr: false }
 );
-import { useFormRegistryContext } from "./hooks/useFormRegistryContext";
-import {
-  FormSettings,
-  FormFieldConfig,
-  FormItemType,
-  FormOption,
-} from "./types";
 
 type Props<T extends FieldValues> = {
   settings: FormSettings;
@@ -112,16 +112,17 @@ export function FormField<T extends FieldValues>({
           onChange(name, value, allValues);
         }
       };
+      const placeholder = typeof label === 'string' ? `Enter ${label}` : (typeof state.alternateLabel === 'string' ? `Enter ${state.alternateLabel}` : undefined);
       if (adapter?.[state.type]) {
         const Component = adapter[state.type];
         return (
-          <Component {...state} value={field.value} onChange={handleChange} />
+          <Component {...state} placeholder={placeholder} value={field.value} onChange={handleChange} />
         );
       }
       switch (state.type) {
         case FormItemType.BOOLEAN:
           return (
-            <CheckboxFormField
+            <CheckboxFormField {...state}
               value={Boolean(field.value)}
               onChange={handleChange as (v: boolean) => void}
             />
@@ -129,30 +130,34 @@ export function FormField<T extends FieldValues>({
         case FormItemType.TEXT:
           return (
             <TextFormField
+              {...state}
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
-              placeholder={state.placeholder}
+              placeholder={placeholder}
             />
           );
         case FormItemType.TEXTAREA:
           return (
             <TextAreaFormField
+              {...state}
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
-              placeholder={state.placeholder}
+              placeholder={placeholder}
             />
           );
         case FormItemType.DATE:
           return (
             <DateFormField
+              {...state}
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
-              placeholder={state.placeholder}
+              placeholder={placeholder}
             />
           );
         case FormItemType.RADIO:
           return (
             <RadioGroupFormField
+              {...state}
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
               options={(state.options || []) as FormOption[]}
@@ -161,15 +166,17 @@ export function FormField<T extends FieldValues>({
         case FormItemType.SELECT:
           return (
             <SelectFormField
+              {...state}
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
               options={(state.options || []) as FormOption[]}
-              placeholder={state.placeholder}
+              placeholder={placeholder}
             />
           );
         case FormItemType.ARRAY:
           return (
             <ArrayFormField
+              {...state}
               name={name}
               structure={state.structure}
               path={path ?? ""}
@@ -178,6 +185,7 @@ export function FormField<T extends FieldValues>({
         case FormItemType.CHECKBOX:
           return (
             <CheckboxGroupFormField
+              {...state}
               value={
                 Array.isArray(field.value) ? (field.value as string[]) : []
               }
@@ -189,7 +197,7 @@ export function FormField<T extends FieldValues>({
           return null;
       }
     },
-    [adapter, form, onChange, name, path, state]
+    [label, state, adapter, onChange, form, name, path]
   );
   return (
     <>

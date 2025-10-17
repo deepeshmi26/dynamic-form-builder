@@ -41,7 +41,8 @@ export type FormConfig = {
 
 export type FormFieldConfig = {
   name: string;
-  label: string;
+  label: React.ReactNode;
+  alternateLabel?: React.ReactNode;
   type: FormItemType;
   options?: FormOption[];
   placeholder?: string;
