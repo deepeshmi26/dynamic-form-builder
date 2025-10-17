@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "test:validators": "jest __tests__/validators.test.ts",
+    "test:utils": "jest __tests__/utils.test.ts",
+    "test:fields": "jest __tests__/form-fields.test.tsx",
+    "test:builder": "jest __tests__/form-builder.test.tsx",
+    "test:form-field": "jest __tests__/form-field.test.tsx",
+    "test:json-editor": "jest __tests__/json-editor.test.tsx",
+    "test:integration": "jest __tests__/integration.test.tsx",
+    "test:unit": "jest __tests__/validators.test.ts __tests__/utils.test.ts",
+    "test:components": "jest __tests__/form-fields.test.tsx __tests__/form-builder.test.tsx __tests__/form-field.test.tsx __tests__/json-editor.test.tsx",
+    "test:all": "jest"
+  }
+}
