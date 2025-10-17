@@ -13,16 +13,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
 // import { formSchema } from "@/lib/types";
-import { FORM_EXAMPLES } from "@/lib/examples";
 import { formatJson } from "@/lib/utils";
 import { Loader2, Wand2 } from "lucide-react";
 import { FormConfig } from "./types";
 
 interface JsonEditorProps {
   onValidJson: (json: FormConfig) => void;
+  formSamples: Record<string, unknown>;
 }
 
-export function JsonEditor({ onValidJson }: JsonEditorProps) {
+export function JsonEditor({
+  onValidJson,
+  formSamples: FORM_EXAMPLES,
+}: JsonEditorProps) {
   const [jsonInput, setJsonInput] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 

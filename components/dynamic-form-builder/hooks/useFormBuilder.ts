@@ -41,8 +41,8 @@ export function useFormBuilder<T extends FieldValues>({
     ) as Resolver<T>,
   });
 
-  const registry = useRef<FormRegistryContext<T>["registry"]>({});
-  const onChangeRecord = useRef<FormRegistryContext<T>["onChangeRecord"]>({});
+  const registry = useRef<FormRegistryContext<T>["registry"]>({}); // Store registered field components
+  const onChangeRecord = useRef<FormRegistryContext<T>["onChangeRecord"]>({}); // Track conditional field dependencies
 
   const handleSubmit: SubmitHandler<T> = (values) => {
     if (onSubmit) onSubmit(values);
@@ -52,12 +52,13 @@ export function useFormBuilder<T extends FieldValues>({
     (newConfig: Omit<FormFieldConfig, "name"> & { name: string }) => {
       if (registry.current) {
         const { name, ...rest } = newConfig;
-        registry.current[name]?.setState(rest);
+        registry.current[name]?.setState(rest); // Update field state in registry
       }
     },
     []
   );
 
+  // Register conditional field dependencies when the field is mounted
   const registerOnChangeRecord = useCallback(
     (fieldConfig: FormFieldConfig) => {
       const { name, onConditionMatch } = fieldConfig;
@@ -65,7 +66,7 @@ export function useFormBuilder<T extends FieldValues>({
       if (registry.current?.[name]) return;
 
       onConditionMatch.forEach((rule) => {
-        const conditionFields = Object.keys(rule.if?.properties || {});
+        const conditionFields = Object.keys(rule.if?.properties || {}); // Get fields that trigger conditions
         conditionFields.forEach((depField) => {
           if (!onChangeRecord.current![depField]) {
             onChangeRecord.current![depField] = [];
@@ -82,6 +83,7 @@ export function useFormBuilder<T extends FieldValues>({
     [onChangeRecord]
   );
 
+  // Unregister field from registry when the field is unmounted
   const unregister = useCallback(
     (name: Path<T>) => {
       if (registry.current?.[name]) delete registry.current[name as string];
@@ -91,6 +93,7 @@ export function useFormBuilder<T extends FieldValues>({
     [registry, onChangeRecord]
   );
 
+  // Register field in registry and change tracking
   const register = useCallback(
     (
       name: string,
@@ -108,12 +111,14 @@ export function useFormBuilder<T extends FieldValues>({
     [registerOnChangeRecord]
   );
 
+  // Run conditional field dependencies by validating the conditions in the onChangeRecord 
+  // and applying the changes to the target fields.
   const runOnChangeConditions = useCallback(
     (fieldName: string, allValues: unknown) => {
       if (!onChangeRecord.current || !onChangeRecord.current[fieldName]) return;
 
       const validator = Validator;
-      const collectedChange: Record<string, Partial<FormFieldConfig>> = {};
+      const collectedChange: Record<string, Partial<FormFieldConfig>> = {}; // Accumulate field changes
 
       onChangeRecord.current[fieldName].forEach((rule: ChangeRule<T>) => {
         const { isValid } = validator.validate(rule.if, allValues);
@@ -136,7 +141,7 @@ export function useFormBuilder<T extends FieldValues>({
             Object.keys(rule.then).forEach((key) => {
               const target = registry.current?.[key];
               if (target?.initialConfig) {
-                collectedChange[key] = target.initialConfig;
+                collectedChange[key] = target.initialConfig; // Reset to initial config if no else condition
               }
             });
           }
@@ -152,14 +157,14 @@ export function useFormBuilder<T extends FieldValues>({
           currentConfig as Record<string, unknown>,
           collectedChange[targetFieldName] as Record<string, unknown>
         );
-        target.setState(mergedConfig);
+        target.setState(mergedConfig); // Apply merged configuration to target field
       });
     },
     [registry]
   );
 
   const debouncedRunOnChangeConditions = useMemo(() => {
-    return debounce(runOnChangeConditions, 800);
+    return debounce(runOnChangeConditions, 800); // Debounce condition evaluation to prevent excessive updates
   }, [runOnChangeConditions]);
 
   const handleGlobalChange = useCallback(

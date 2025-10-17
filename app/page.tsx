@@ -3,6 +3,7 @@ import { JsonEditor } from "@/components/dynamic-form-builder/JSONEditor";
 import { FormConfig } from "@/components/dynamic-form-builder/types";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { FORM_EXAMPLES } from "@/lib/examples";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { FormView } from "./FormView";
@@ -35,6 +36,7 @@ export default function Home() {
                 handleValidJson(json as FormConfig);
                 setOpen(false);
               }}
+              formSamples={FORM_EXAMPLES}
             />
           </SheetContent>
         </Sheet>
@@ -44,7 +46,10 @@ export default function Home() {
       <div className="hidden lg:flex h-full">
         <div className="w-1/2 bg-black p-6 overflow-hidden h-full max-h-screen">
           <h1 className="text-3xl font-bold text-white">JSON Editor</h1>
-          <JsonEditor onValidJson={handleValidJson} />
+          <JsonEditor
+            onValidJson={handleValidJson}
+            formSamples={FORM_EXAMPLES}
+          />
         </div>
 
         <div className="w-1/2 bg-white p-6 overflow-y-auto">
