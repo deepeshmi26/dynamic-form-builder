@@ -27,6 +27,7 @@ export function ArrayInlineAdapter({ name, structure, path }: Props) {
             {structure.map((item) => (
               <div key={`${name}.${index}.${item.name}`}>
                 <FormField
+                  settings={undefined}
                   control={control}
                   field={{ ...item, name: `${name}.${index}.${item.name}` }}
                 />

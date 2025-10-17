@@ -12,6 +12,7 @@ export const FORM_EXAMPLES = {
         type: "DATE",
         placeholder: "Select your birth date",
         required: true,
+        width: 6,
       },
       {
         name: "name",
@@ -19,6 +20,7 @@ export const FORM_EXAMPLES = {
         type: "TEXT",
         placeholder: "Enter your full name",
         required: true,
+        width: 6,
         validation: {
           minLength: 12,
           maxLength: 50,
@@ -123,6 +125,9 @@ export const FORM_EXAMPLES = {
 
   feedback: {
     label: "Product Feedback Form",
+    settings: {
+      layout: "horizontal",
+    },
     fields: [
       {
         name: "productRating",

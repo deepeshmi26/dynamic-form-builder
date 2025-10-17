@@ -43,7 +43,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
     defaultValues: initialValues,
     mode: "onChange",
     resolver: FormResolver(
-      Validator.generateSchema(config) as JSONSchemaType<unknown>
+      Validator.generateSchema(config.fields || []) as JSONSchemaType<unknown>
     ) as Resolver<TFieldValues>,
   });
 
@@ -229,11 +229,16 @@ export function FormGenerator<TFieldValues extends FieldValues>({
         }}
       >
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {config.map((field) => (
+          {config.fields?.map((field) => (
             <FormField
               key={field.name}
+              settings={config.settings}
               control={form.control as Control<TFieldValues>}
-              field={field}
+              field={
+                field as Omit<FormFieldConfig, "name"> & {
+                  name: Path<TFieldValues>;
+                }
+              }
             />
           ))}
           {children}

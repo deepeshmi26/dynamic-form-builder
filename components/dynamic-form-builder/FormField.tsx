@@ -70,6 +70,7 @@ export function FormField<TFieldValues extends FieldValues>({
   const [state, setState] = useState<FieldValues[keyof FieldValues]>(config);
   const name = config.name;
   const label = state.label;
+  const layout = settings?.layout || "vertical";
 
   useEffect(() => {
     setState(config);
@@ -189,17 +190,33 @@ export function FormField<TFieldValues extends FieldValues>({
           }: {
             field: { value: unknown; onChange: (value: unknown) => void };
           }) => (
-            <FormItem className={cn("space-y-2 sm:space-y-3", "")}>
+            <FormItem
+              className={cn(
+                "space-y-2",
+                layout === "horizontal" &&
+                  "grid grid-cols-1 sm:grid-cols-3 sm:items-center sm:space-y-0 sm:gap-4"
+              )}
+            >
               <FormLabel
                 required={state.required}
-                className={cn("text-sm sm:text-base m-0", "")}
+                className={cn(
+                  "text-sm sm:text-base font-medium",
+                  layout === "horizontal" && "sm:text-right"
+                )}
               >
                 {label}
               </FormLabel>
-              <FormControl>
+              <FormControl
+                className={cn(layout === "horizontal" && "sm:col-span-2")}
+              >
                 <Component {...field} />
               </FormControl>
-              <FormMessage className={cn("text-xs sm:text-sm", "")} />
+              <FormMessage
+                className={cn(
+                  "text-xs sm:text-sm",
+                  layout === "horizontal" && "sm:col-start-2 sm:col-span-2"
+                )}
+              />
             </FormItem>
           )}
         />
