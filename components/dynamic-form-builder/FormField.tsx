@@ -24,6 +24,13 @@ const CheckboxFormField = dynamic(
   () => import("./fields/CheckboxFormField").then((m) => m.CheckboxFormField),
   { ssr: false }
 );
+const CheckboxGroupFormField = dynamic(
+  () =>
+    import("./fields/CheckboxGroupFormField").then(
+      (m) => m.CheckboxGroupFormField
+    ),
+  { ssr: false }
+);
 const RadioGroupFormField = dynamic(
   () =>
     import("./fields/RadioGroupFormField").then((m) => m.RadioGroupFormField),
@@ -133,6 +140,17 @@ export function FormField<TFieldValues extends FieldValues>({
             />
           );
         case FormItemType.CHECKBOX:
+          if (Array.isArray(state.options) && state.options.length > 0) {
+            return (
+              <CheckboxGroupFormField
+                value={
+                  Array.isArray(field.value) ? (field.value as string[]) : []
+                }
+                onChange={handleChange as (v: string[]) => void}
+                options={(state.options || []) as FormOption[]}
+              />
+            );
+          }
           return (
             <CheckboxFormField
               value={Boolean(field.value)}

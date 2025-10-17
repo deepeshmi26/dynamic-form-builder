@@ -31,7 +31,7 @@ export class AjvValidator implements IValidator<object> {
 
     const schema: Record<string, unknown> = {
       ...field.validation,
-      type: "string",
+      // type: "string",
     };
 
     if (field.required) {

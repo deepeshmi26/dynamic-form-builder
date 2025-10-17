@@ -64,6 +64,18 @@ export const FORM_EXAMPLES = {
         ],
       },
       {
+        name: "favoriteFood",
+        label: "Select your favorite food",
+        type: "CHECKBOX",
+        required: true,
+        options: [
+          { value: "pizza", label: "Pizza" },
+          { value: "burger", label: "Burger" },
+          { value: "salad", label: "Salad" },
+          { value: "sushi", label: "Sushi" },
+        ],
+      },
+      {
         name: "email",
         label: "Email Address",
         type: "TEXT",
