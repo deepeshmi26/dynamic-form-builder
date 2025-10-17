@@ -190,7 +190,7 @@ export function FormField<TFieldValues extends FieldValues>({
             <FormItem className={cn("space-y-2 sm:space-y-3", "")}>
               <FormLabel
                 required={state.required}
-                className={cn("text-sm sm:text-base", "")}
+                className={cn("text-sm sm:text-base m-0", "")}
               >
                 {label}
               </FormLabel>
