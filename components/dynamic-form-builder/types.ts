@@ -27,6 +27,7 @@ export type FormConfig = {
   settings?: {
     enabledebounce: boolean;
     layout?: "vertical" | "horizontal";
+    className?: string; // Applied to the fields container
   };
   fields?: FormFieldConfig[];
 };
@@ -40,6 +41,11 @@ export type FormFieldConfig = {
   validation?: Record<string, unknown>;
   required?: boolean;
   structure?: FormFieldConfig[];
+  classNames?: {
+    body?: string; // Applied to the container containing label & field
+    label?: string; // Applied only on the label
+    field?: string; // Applied only on the field
+  };
   onConditionMatch?: {
     if: {
       properties: {

@@ -21,7 +21,7 @@ export function FormBuilder<TFieldValues extends FieldValues>(
     <Form {...form}>
       <FormRegistryContext.Provider value={contextValue}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="space-y-4">
+          <div className={cn("space-y-4", settings?.className)}>
             {config.fields?.map((field: FormFieldConfig) => (
               <FormField
                 key={field.name}

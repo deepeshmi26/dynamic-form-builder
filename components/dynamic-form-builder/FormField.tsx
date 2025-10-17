@@ -194,20 +194,25 @@ export function FormField<TFieldValues extends FieldValues>({
               className={cn(
                 "space-y-2",
                 layout === "horizontal" &&
-                  "grid grid-cols-1 sm:grid-cols-3 sm:items-center sm:space-y-0 sm:gap-4"
+                  "grid grid-cols-1 sm:grid-cols-3 sm:items-center sm:space-y-0 sm:gap-4",
+                state.classNames?.body
               )}
             >
               <FormLabel
                 required={state.required}
                 className={cn(
                   "text-sm sm:text-base font-medium",
-                  layout === "horizontal" && "sm:text-right"
+                  layout === "horizontal" && "sm:text-right",
+                  state.classNames?.label
                 )}
               >
                 {label}
               </FormLabel>
               <FormControl
-                className={cn(layout === "horizontal" && "sm:col-span-2")}
+                className={cn(
+                  layout === "horizontal" && "sm:col-span-2",
+                  state.classNames?.field
+                )}
               >
                 <Component {...field} />
               </FormControl>

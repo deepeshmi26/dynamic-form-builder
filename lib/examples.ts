@@ -4,6 +4,7 @@ export const FORM_EXAMPLES = {
     settings: {
       enabledebounce: true,
       layout: "vertical",
+      className: "bg-gray-50 p-6 rounded-lg",
     },
     fields: [
       {
@@ -12,6 +13,11 @@ export const FORM_EXAMPLES = {
         type: "DATE",
         placeholder: "Select your birth date",
         required: true,
+        classNames: {
+          body: "border-b border-gray-200 pb-4",
+          label: "text-blue-600 font-semibold",
+          field: "bg-white border-2 border-blue-200",
+        },
       },
       {
         name: "name",
@@ -19,6 +25,11 @@ export const FORM_EXAMPLES = {
         type: "TEXT",
         placeholder: "Enter your full name",
         required: true,
+        classNames: {
+          body: "bg-green-50 p-3 rounded",
+          label: "text-green-700 font-bold",
+          field: "ring-2 ring-green-300 focus:ring-green-500",
+        },
         validation: {
           minLength: 12,
           maxLength: 50,
