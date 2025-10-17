@@ -39,6 +39,9 @@ type Props<TFieldValues extends FieldValues> = {
 
 type RegistryEntry<TFieldValues extends FieldValues> = {
   config: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> };
+  initialConfig: Omit<FormFieldConfig, "name"> & {
+    name: FieldPath<TFieldValues>;
+  };
   setState: (state: unknown) => void;
 };
 
@@ -194,6 +197,9 @@ export function FormGenerator<TFieldValues extends FieldValues>({
             name: FieldPath<TFieldValues>;
           },
           setState: setStateCall,
+          initialConfig: config as Omit<FormFieldConfig, "name"> & {
+            name: FieldPath<TFieldValues>;
+          },
         } as TFieldValues[keyof TFieldValues];
       }
     },
@@ -213,8 +219,8 @@ export function FormGenerator<TFieldValues extends FieldValues>({
         const collectedChange: Record<string, Partial<FormFieldConfig>> = {};
         onChangeRecord.current[fieldName].forEach(
           (rule: ChangeRule<TFieldValues>) => {
-            if (validator.validate(rule.if, allValues)) {
-              
+            const { isValid } = validator.validate(rule.if, allValues);
+            if (isValid) {
               Object.keys(rule.then).forEach((key) => {
                 //Merge rule.then[key] with collectedChange[key]
                 collectedChange[key] = mergeDeep(
@@ -223,12 +229,23 @@ export function FormGenerator<TFieldValues extends FieldValues>({
                 );
               });
             } else {
-              Object.keys(rule.else).forEach((key) => {
-                collectedChange[key] = mergeDeep(
-                  collectedChange[key] as Record<string, unknown>,
-                  rule.else[key] as Record<string, unknown>
-                );
-              });
+              if (Object.keys(rule.else || {}).length > 0) {
+                // If else condition has keys, apply those changes
+                Object.keys(rule.else).forEach((key) => {
+                  collectedChange[key] = mergeDeep(
+                    collectedChange[key] as Record<string, unknown>,
+                    rule.else[key] as Record<string, unknown>
+                  );
+                });
+              } else {
+                // If no else condition, reset the fields from 'then' to initial values
+                Object.keys(rule.then).forEach((key) => {
+                  const target = registry.current?.[key];
+                  if (target?.initialConfig) {
+                    collectedChange[key] = target.initialConfig;
+                  }
+                });
+              }
             }
           }
         );
@@ -264,6 +281,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
             config: Omit<FormFieldConfig, "name"> & {
               name: FieldPath<FieldValues>;
             },
+
             setStateCall: (state: FieldValues[keyof FieldValues]) => void
           ) => void,
           adapter: {
