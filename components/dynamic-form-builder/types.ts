@@ -28,6 +28,11 @@ export type FormConfig = {
     enabledebounce: boolean;
     layout?: "vertical" | "horizontal";
     className?: string; // Applied to the fields container
+    defaultClassNames?: {
+      body?: string; // Applied to all field containers by default
+      label?: string; // Applied to all field labels by default
+      field?: string; // Applied to all field inputs by default
+    };
   };
   fields?: FormFieldConfig[];
 };

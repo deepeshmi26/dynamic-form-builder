@@ -5,6 +5,11 @@ export const FORM_EXAMPLES = {
       enabledebounce: true,
       layout: "vertical",
       className: "bg-gray-50 p-6 rounded-lg",
+      defaultClassNames: {
+        body: "mb-4 p-3 border border-gray-200 rounded",
+        label: "text-gray-700 font-medium",
+        field: "bg-white border border-gray-300 rounded-md",
+      },
     },
     fields: [
       {
@@ -28,7 +33,6 @@ export const FORM_EXAMPLES = {
         classNames: {
           body: "bg-green-50 p-3 rounded",
           label: "text-green-700 font-bold",
-          field: "ring-2 ring-green-300 focus:ring-green-500",
         },
         validation: {
           minLength: 12,

@@ -72,6 +72,13 @@ export function FormField<TFieldValues extends FieldValues>({
   const label = state.label;
   const layout = settings?.layout || "vertical";
 
+  // Merge default classNames with field-specific classNames (field-specific takes priority)
+  const mergedClassNames = {
+    body: cn(settings?.defaultClassNames?.body, state.classNames?.body),
+    label: cn(settings?.defaultClassNames?.label, state.classNames?.label),
+    field: cn(settings?.defaultClassNames?.field, state.classNames?.field),
+  };
+
   useEffect(() => {
     setState(config);
   }, [config]);
@@ -195,7 +202,7 @@ export function FormField<TFieldValues extends FieldValues>({
                 "space-y-2",
                 layout === "horizontal" &&
                   "grid grid-cols-1 sm:grid-cols-3 sm:items-center sm:space-y-0 sm:gap-4",
-                state.classNames?.body
+                mergedClassNames.body
               )}
             >
               <FormLabel
@@ -203,7 +210,7 @@ export function FormField<TFieldValues extends FieldValues>({
                 className={cn(
                   "text-sm sm:text-base font-medium",
                   layout === "horizontal" && "sm:text-right",
-                  state.classNames?.label
+                  mergedClassNames.label
                 )}
               >
                 {label}
@@ -211,7 +218,7 @@ export function FormField<TFieldValues extends FieldValues>({
               <FormControl
                 className={cn(
                   layout === "horizontal" && "sm:col-span-2",
-                  state.classNames?.field
+                  mergedClassNames.field
                 )}
               >
                 <Component {...field} />
