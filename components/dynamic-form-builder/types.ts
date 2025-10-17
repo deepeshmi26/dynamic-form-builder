@@ -10,6 +10,7 @@ export enum FormItemType {
   CHECKBOX = "CHECKBOX",
   RADIO = "RADIO",
   TEXT = "TEXT",
+  TEXTAREA = "TEXTAREA",
   DATE = "DATE",
   ARRAY = "ARRAY",
 }

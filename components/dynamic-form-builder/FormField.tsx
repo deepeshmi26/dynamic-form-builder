@@ -44,6 +44,10 @@ const TextFormField = dynamic(
   () => import("./fields/TextFormField").then((m) => m.TextFormField),
   { ssr: false }
 );
+const TextAreaFormField = dynamic(
+  () => import("./fields/TextAreaFormField").then((m) => m.TextAreaFormField),
+  { ssr: false }
+);
 const DateFormField = dynamic(
   () => import("./fields/DateFormField").then((m) => m.DateFormField),
   { ssr: false }
@@ -101,6 +105,14 @@ export function FormField<TFieldValues extends FieldValues>({
         case FormItemType.TEXT:
           return (
             <TextFormField
+              value={(field.value as string) ?? undefined}
+              onChange={handleChange as (v: string) => void}
+              placeholder={state.placeholder}
+            />
+          );
+        case FormItemType.TEXTAREA:
+          return (
+            <TextAreaFormField
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
               placeholder={state.placeholder}
