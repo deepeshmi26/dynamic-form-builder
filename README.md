@@ -16,8 +16,11 @@ Shadcn works well with Nextjs. Nextjs gives out of box support for shadcn and ta
 7. [X] Create a **FormRegistryContext**
     1. [X] The context should wrap the entire form, but it should be inside React hook form to enable access to React hook form apis.
     2. [X] In the FormWrapperComponent, have a state call. Expose the setState call of each FormWrapper component to registry.
-8. [ ] Now add support for zod based validation. Why zod? Because i want to do type based validation when creating the json form as well.
-9. [ ] Add more validation support.
+8. [ ] Add conditional support i.e. updating a field updates other field
+    1. [X] Make a simple form validator and updater
+    2. [ ] Add support for validating nested fields and updatin nested fields.
+9. [X] Add validation support. Create classes to enable easy sitiching beteen validation libraries.
+1. [ ] Add more validation support if using zod.
 1. [ ] Add more field supports e.g. upload, date etc.
 1. [ ] Take care of typescript types later on
 1. [ ] Extendability
@@ -25,7 +28,7 @@ Shadcn works well with Nextjs. Nextjs gives out of box support for shadcn and ta
      2. [ ] Make use of adapter pattern at the top most level to enable making use of a set of patterns for the entire application
      3. [ ] Enable extending label to support reactNode
      4. [ ] Enable semantic styling for the entire form
-13. [ ]
+14. [ ]
 
 ### Similarity between Antd form and React hook Form
 

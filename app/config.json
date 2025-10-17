@@ -9,7 +9,31 @@
       "minLength": 3,
       "maxLength": 100
     },
-    "onCondition": {}
+    "onConditionMatch": [
+      {
+        "if": {
+          "properties": {
+            "city": {
+              "const": "new york"
+            }
+          }
+        },
+        "then": {
+          "age": {
+            "label": "Age2",
+            "type": "NUMBER",
+            "placeholder": "Enter your age",
+            "required": true
+          },
+          "name": {
+            "label": "Name2",
+            "type": "TEXT",
+            "placeholder": "Enter your name",
+            "required": true
+          }
+        }
+      }
+    ]
   },
   {
     "name": "city",

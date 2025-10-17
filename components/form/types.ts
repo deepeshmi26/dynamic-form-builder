@@ -24,6 +24,17 @@ export type FormFieldConfig = {
   };
   required?: boolean;
   structure?: FormFieldConfig[];
+  onConditionMatch?: {
+    if: {
+      properties: {
+        [key: string]: {
+          const: string;
+        };
+      };
+    };
+    then?: Record<string, Partial<FormFieldConfig>>;
+    else?: Record<string, Partial<FormFieldConfig>>;
+  }[];
 };
 
 export type StringOption = { label: string; value: string; disabled?: boolean };

@@ -9,7 +9,12 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { useCallback, useContext, useMemo, useState } from "react";
-import { Control, FieldPath, FieldValues } from "react-hook-form";
+import {
+  Control,
+  FieldPath,
+  FieldValues,
+  useFormContext,
+} from "react-hook-form";
 import { FormRegistryContext } from "./FormGenerator";
 import { CheckboxFormItem } from "./FormItems/CheckboxFormItem";
 import { RadioGroupFormItem } from "./FormItems/RadioGroupFormItem";
@@ -31,7 +36,12 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
   const [state, setState] = useState<FieldValues[keyof FieldValues]>(config);
   const name = config.name;
   const label = state.label;
-  const { register, adapter } = useContext(FormRegistryContext);
+  const {
+    register,
+    adapter,
+    onChange: globalChangeListener,
+  } = useContext(FormRegistryContext);
+  const form = useFormContext();
 
   useMemo(() => {
     register?.(name, config, setState);
@@ -39,16 +49,23 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
 
   const Component = useCallback(
     (field: { value: unknown; onChange: (value: unknown) => void }) => {
+      const handleChange = (value: unknown) => {
+        field.onChange(value);
+        if (globalChangeListener) {
+          const allValues = form.getValues();
+          globalChangeListener(name, value, allValues);
+        }
+      };
       if (adapter?.[state.type]) {
         const Component = adapter[state.type];
-        return <Component value={field.value} onChange={field.onChange} />;
+        return <Component value={field.value} onChange={handleChange} />;
       }
       switch (state.type) {
         case FormItemType.TEXT:
           return (
             <TextFormItem
               value={(field.value as string) ?? undefined}
-              onChange={field.onChange as (v: string) => void}
+              onChange={handleChange as (v: string) => void}
               placeholder={state.placeholder}
             />
           );
@@ -56,7 +73,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           return (
             <RadioGroupFormItem
               value={(field.value as string) ?? undefined}
-              onChange={field.onChange as (v: string) => void}
+              onChange={handleChange as (v: string) => void}
               options={(state.options || []) as StringOption[]}
             />
           );
@@ -64,7 +81,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           return (
             <SelectFormItem
               value={(field.value as string) ?? undefined}
-              onChange={field.onChange as (v: string) => void}
+              onChange={handleChange as (v: string) => void}
               options={(state.options || []) as StringOption[]}
               placeholder={state.placeholder}
             />
@@ -81,7 +98,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           return (
             <CheckboxFormItem
               value={Boolean(field.value)}
-              onChange={field.onChange as (v: boolean) => void}
+              onChange={handleChange as (v: boolean) => void}
             />
           );
         default:
@@ -90,6 +107,8 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
     },
     [
       adapter,
+      form,
+      globalChangeListener,
       name,
       path,
       state.options,

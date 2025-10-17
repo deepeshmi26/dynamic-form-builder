@@ -11,8 +11,22 @@ export function ExampleForm() {
   const handleSubmit = (values: FieldValues) => {
     console.log(values);
   };
+
+  const handleGlobalChange = (
+    fieldName: string,
+    value: unknown,
+    allValues: FieldValues
+  ) => {
+    console.log(`Field "${fieldName}" changed to:`, value);
+    console.log("All form values:", allValues);
+  };
+
   return (
-    <FormGenerator config={config} onSubmit={handleSubmit}>
+    <FormGenerator
+      config={config}
+      onSubmit={handleSubmit}
+      onChange={handleGlobalChange}
+    >
       <div className="flex">
         <Button type="submit" className="w-full sm:w-auto">
           Submit
