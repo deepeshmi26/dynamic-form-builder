@@ -9,17 +9,34 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   Control,
   FieldPath,
   FieldValues,
   useFormContext,
 } from "react-hook-form";
-import { ArrayFormField } from "./fields/ArrayFormField";
-import { CheckboxFormField } from "./fields/CheckboxFormField";
-import { RadioGroupFormField } from "./fields/RadioGroupFormField";
-import { SelectFormField } from "./fields/SelectFormField";
-import { TextFormField } from "./fields/TextFormField";
+const ArrayFormField = dynamic(
+  () => import("./fields/ArrayFormField").then((m) => m.ArrayFormField),
+  { ssr: false }
+);
+const CheckboxFormField = dynamic(
+  () => import("./fields/CheckboxFormField").then((m) => m.CheckboxFormField),
+  { ssr: false }
+);
+const RadioGroupFormField = dynamic(
+  () =>
+    import("./fields/RadioGroupFormField").then((m) => m.RadioGroupFormField),
+  { ssr: false }
+);
+const SelectFormField = dynamic(
+  () => import("./fields/SelectFormField").then((m) => m.SelectFormField),
+  { ssr: false }
+);
+const TextFormField = dynamic(
+  () => import("./fields/TextFormField").then((m) => m.TextFormField),
+  { ssr: false }
+);
 import { useFormRegistryContext } from "./hooks/useFormRegistryContext";
 import { FormFieldConfig, FormItemType, FormOption } from "./types";
 
