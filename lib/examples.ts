@@ -33,7 +33,7 @@ export const FORM_EXAMPLES = {
           body: "bg-green-50 p-3 rounded",
           label: "text-green-700 font-bold",
         },
-        validation: {
+        validator: {
           minLength: 12,
           maxLength: 50,
         },
@@ -96,14 +96,15 @@ export const FORM_EXAMPLES = {
         type: "TEXT",
         placeholder: "Enter your email",
         required: true,
-        validation: {
+        validator: {
           pattern: "^[A-Za-z0-9._-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$",
         },
       },
       {
         name: "socialHandles",
         label: "Social media handles",
-        type: "ARRAY_INLINE",
+        renderComponent: "ARRAY_INLINE",
+        type: "ARRAY",
         structure: [
           {
             name: "platform",
@@ -121,7 +122,11 @@ export const FORM_EXAMPLES = {
             label: "Profile URL",
             type: "TEXT",
             placeholder: "Enter the profile URL",
-            required: true,
+            // required: true,
+            validator:{
+              type: "string",
+              minLength: 10,
+            }
           },
         ],
       },
@@ -196,7 +201,7 @@ export const FORM_EXAMPLES = {
         type: "TEXT",
         placeholder: "Enter your email",
         required: true,
-        validation: {
+        validator: {
           pattern: "^[A-Za-z0-9._-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$",
         },
       },

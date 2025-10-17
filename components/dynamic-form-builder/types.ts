@@ -46,7 +46,7 @@ export type FormFieldConfig = {
   type: FormItemType;
   options?: FormOption[];
   placeholder?: string;
-  validation?: Record<string, unknown>;
+  validator?: Record<string, unknown>;
   visible?: boolean;
   required?: boolean;
   structure?: FormFieldConfig[];
