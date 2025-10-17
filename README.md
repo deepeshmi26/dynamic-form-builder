@@ -29,24 +29,12 @@ Shadcn works well with Nextjs. Nextjs gives out of box support for shadcn and ta
 1. [X] Support semantic classNames
 1. [ ] Add more validation support if using zod.
 1. [ ] Take care of typescript types later on
-1. [ ] Extendability
+1. [X] Extendability
      1. [X] Make use of adapter pattern to extend the support for new form items at the form level
-     2. [ ] Make use of adapter pattern at the top most level to enable making use of a set of patterns for the entire application
-     3. [ ] Enable extending label to support reactNode
+     2. [X] Enable extending label to support reactNode
+     3. [X] Make use of semantic styling
 
 ### Similarity between Antd form and React hook Form
-
-```
-<Form.Item>
-<Some Component value={} onChange={} />
-</Form.Item>
-```
-
-```
-<Controller 
-render = {({field}) => <SomeComponent value={field.value} onChange={field.conChange}}
-/>
-```
 
 ## Deploy on Vercel
 
