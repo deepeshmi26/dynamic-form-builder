@@ -62,6 +62,8 @@ export type FormFieldConfig = {
     then?: Record<string, Partial<FormFieldConfig>>;
     else?: Record<string, Partial<FormFieldConfig>>;
   }[];
+  [key: string]: unknown;
+
 };
 
 export type FormProps<T extends FieldValues> = {

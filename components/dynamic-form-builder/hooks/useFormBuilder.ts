@@ -1,8 +1,7 @@
 "use client";
 
 import { mergeDeep } from "@/lib/utils";
-import { ajvResolver } from "@hookform/resolvers/ajv";
-import { JSONSchemaType } from "ajv";
+import { debounce } from "lodash";
 import { useCallback, useMemo, useRef } from "react";
 import {
   FieldPath,
@@ -12,7 +11,6 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { AjvValidator } from "../validator/AjvValidator";
 import {
   ChangeRule,
   FormFieldConfig,
@@ -20,9 +18,8 @@ import {
   FormRegistryContext,
   RegistryEntry,
 } from "../types";
-import { debounce } from "lodash";
+import { AjvValidator } from "../validator/AjvValidator";
 
-const FormResolver = ajvResolver;
 const Validator = new AjvValidator();
 
 export function useFormBuilder<T extends FieldValues>({
@@ -36,9 +33,7 @@ export function useFormBuilder<T extends FieldValues>({
   const form = useForm<T>({
     defaultValues: initialValues,
     mode: "onChange",
-    resolver: FormResolver(
-      Validator.generateSchema(fields || []) as JSONSchemaType<T>
-    ) as Resolver<T>,
+    resolver: Validator.customAjvResolver(Validator.generateSchema(fields || [])) as Resolver<T>,
   });
 
   const registry = useRef<FormRegistryContext<T>["registry"]>({}); // Store registered field components
@@ -97,7 +92,7 @@ export function useFormBuilder<T extends FieldValues>({
   const register = useCallback(
     (
       name: string,
-      fieldConfig: Omit<FormFieldConfig, "name"> & { name: string },
+      fieldConfig: FormFieldConfig,
       setStateCall: (state: T[keyof T]) => void
     ) => {
       if (!registry.current) return;
@@ -165,7 +160,7 @@ export function useFormBuilder<T extends FieldValues>({
   );
 
   const debouncedRunOnChangeConditions = useMemo(() => {
-    return debounce(runOnChangeConditions, 800); // Debounce condition evaluation to prevent excessive updates
+    return debounce(runOnChangeConditions, 300); // Debounce condition evaluation to prevent excessive updates
   }, [runOnChangeConditions]);
 
   const handleGlobalChange = useCallback(
