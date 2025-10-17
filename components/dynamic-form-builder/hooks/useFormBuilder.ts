@@ -12,7 +12,7 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { AjvValidator } from "../validators/AjvValidator";
+import { AjvValidator } from "../validator/AjvValidator";
 import {
   ChangeRule,
   FormFieldConfig,
