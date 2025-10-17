@@ -1,7 +1,7 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { ajvResolver } from "@hookform/resolvers/ajv";
 import { createContext, useCallback, useRef } from "react";
 import {
   Control,
@@ -14,8 +14,11 @@ import {
   useForm,
 } from "react-hook-form";
 import { FormItemComponent } from "./FormComponent";
-import { AjvValidator, ZodValidator } from "./resolvers";
+import { AjvValidator } from "./resolvers";
 import { FormFieldConfig } from "./types";
+
+const FormResolver = ajvResolver;
+const Validator = new AjvValidator();
 
 type Props<TFieldValues extends FieldValues> = {
   config: (Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> })[];
@@ -125,8 +128,8 @@ export function FormGenerator<TFieldValues extends FieldValues>({
   const form = useForm<TFieldValues>({
     defaultValues: initialValues,
     mode: "onChange",
-    resolver: zodResolver(
-      new ZodValidator().generateSchema(config)
+    resolver: FormResolver(
+      Validator.generateSchema(config)
     ) as Resolver<TFieldValues>,
   });
 
@@ -214,7 +217,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
         onChange(fieldName, value, allValues);
       }
 
-      const validator = new AjvValidator();
+      const validator = Validator;
       if (onChangeRecord.current && onChangeRecord.current[fieldName]) {
         const collectedChange: Record<string, Partial<FormFieldConfig>> = {};
         onChangeRecord.current[fieldName].forEach(
