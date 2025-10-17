@@ -1,6 +1,13 @@
 import Ajv from "ajv";
 import { FormFieldConfig, FormItemType } from "../types";
-import { IValidator } from "./IValidator";
+
+export interface IValidator<T> {
+  validate(
+    schema: unknown,
+    data: unknown
+  ): { isValid: boolean; errors?: unknown };
+  generateSchema(config: FormFieldConfig[]): T;
+}
 
 export class AjvValidator implements IValidator<object> {
   private ajv: Ajv;
