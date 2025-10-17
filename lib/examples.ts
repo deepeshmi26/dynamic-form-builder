@@ -2,8 +2,8 @@ export const FORM_EXAMPLES = {
   contact: {
     label: "Simple Contact Form",
     settings: {
-      layout: "inline",
       enabledebounce: true,
+      layout: "vertical",
     },
     fields: [
       {
@@ -12,7 +12,6 @@ export const FORM_EXAMPLES = {
         type: "DATE",
         placeholder: "Select your birth date",
         required: true,
-        width: 6,
       },
       {
         name: "name",
@@ -20,7 +19,6 @@ export const FORM_EXAMPLES = {
         type: "TEXT",
         placeholder: "Enter your full name",
         required: true,
-        width: 6,
         validation: {
           minLength: 12,
           maxLength: 50,
