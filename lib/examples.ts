@@ -1,0 +1,419 @@
+export const FORM_EXAMPLES = {
+  contact: {
+    label: "Contact Form (Inline Layout)",
+    value: [
+      {
+        name: "name",
+        label: "Name",
+        type: "TEXT",
+        placeholder: "Enter your name",
+        required: true,
+        validation: {
+          minLength: 3,
+          maxLength: 100,
+        },
+        onConditionMatch: [
+          {
+            if: {
+              properties: {
+                city: {
+                  const: "new york",
+                },
+              },
+            },
+            then: {
+              age: {
+                label: "Age2",
+                type: "NUMBER",
+                placeholder: "Enter your age",
+                required: true,
+              },
+              name: {
+                label: "Name2",
+                type: "TEXT",
+                placeholder: "Enter your name",
+                required: true,
+              },
+            },
+          },
+        ],
+      },
+      {
+        name: "city",
+        label: "City",
+        type: "SELECT",
+        placeholder: "Select your city",
+        options: [
+          { value: "new york", label: "New York" },
+          { value: "los angeles", label: "Los Angeles" },
+          { value: "chicago", label: "Chicago" },
+          { value: "houston", label: "Houston" },
+          { value: "miami", label: "Miami" },
+        ],
+        required: true,
+      },
+      {
+        name: "age",
+        label: "Age",
+        type: "NUMBER",
+        placeholder: "Enter your age",
+        required: true,
+      },
+      {
+        name: "parentName",
+        label: "Parent Name",
+        type: "TEXT",
+        placeholder: "Enter your parent name",
+        required: true,
+        onConditionMatch: [{}],
+      },
+
+      {
+        name: "contactDetails",
+        label: "Contact Details",
+        type: "ARRAY",
+        structure: [
+          {
+            name: "email",
+            label: "Email",
+            type: "TEXT",
+            placeholder: "Enter your email",
+            required: true,
+          },
+          {
+            name: "phone",
+            label: "Phone",
+            type: "TEXT",
+            placeholder: "Enter your phone number",
+          },
+          {
+            name: "socialMedia",
+            label: "Social Media",
+            type: "ARRAY",
+            structure: [
+              {
+                name: "platform",
+                label: "Platform",
+                type: "SELECT",
+                placeholder: "Select platform",
+                options: [
+                  { value: "ui", label: "UI" },
+                  { value: "ux", label: "UX" },
+                  { value: "dev", label: "Development" },
+                  { value: "design", label: "Design" },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "satisfaction",
+        label: "How satisfied are you?",
+        type: "RADIO",
+        options: [
+          { value: "5", label: "Very Satisfied" },
+          { value: "4", label: "Satisfied" },
+          { value: "3", label: "Neutral" },
+          { value: "2", label: "Dissatisfied" },
+          { value: "1", label: "Very Dissatisfied" },
+        ],
+      },
+      {
+        name: "improvements",
+        label: "What areas need improvement?",
+        type: "SELECT",
+        placeholder: "Select areas",
+        options: [
+          { value: "ui", label: "User Interface" },
+          { value: "performance", label: "Performance" },
+          { value: "features", label: "Features" },
+          { value: "docs", label: "Documentation" },
+        ],
+      },
+      {
+        name: "subscribe",
+        label: "Subscribe to newsletter",
+        type: "CHECBOX",
+      },
+    ],
+  },
+  survey: {
+    label: "Survey Form (Vertical Layout)",
+    value: [
+      {
+        name: "name",
+        label: "Name",
+        type: "TEXT",
+        placeholder: "Enter your name",
+        required: true,
+        validation: {
+          minLength: 3,
+          maxLength: 100,
+        },
+        onConditionMatch: [
+          {
+            if: {
+              properties: {
+                city: {
+                  const: "new york",
+                },
+              },
+            },
+            then: {
+              age: {
+                label: "Age2",
+                type: "NUMBER",
+                placeholder: "Enter your age",
+                required: true,
+              },
+              name: {
+                label: "Name2",
+                type: "TEXT",
+                placeholder: "Enter your name",
+                required: true,
+              },
+            },
+          },
+        ],
+      },
+      {
+        name: "city",
+        label: "City",
+        type: "SELECT",
+        placeholder: "Select your city",
+        options: [
+          { value: "new york", label: "New York" },
+          { value: "los angeles", label: "Los Angeles" },
+          { value: "chicago", label: "Chicago" },
+          { value: "houston", label: "Houston" },
+          { value: "miami", label: "Miami" },
+        ],
+        required: true,
+      },
+      {
+        name: "age",
+        label: "Age",
+        type: "NUMBER",
+        placeholder: "Enter your age",
+        required: true,
+      },
+      {
+        name: "parentName",
+        label: "Parent Name",
+        type: "TEXT",
+        placeholder: "Enter your parent name",
+        required: true,
+        onConditionMatch: [{}],
+      },
+
+      {
+        name: "contactDetails",
+        label: "Contact Details",
+        type: "ARRAY",
+        structure: [
+          {
+            name: "email",
+            label: "Email",
+            type: "TEXT",
+            placeholder: "Enter your email",
+            required: true,
+          },
+          {
+            name: "phone",
+            label: "Phone",
+            type: "TEXT",
+            placeholder: "Enter your phone number",
+          },
+          {
+            name: "socialMedia",
+            label: "Social Media",
+            type: "ARRAY",
+            structure: [
+              {
+                name: "platform",
+                label: "Platform",
+                type: "SELECT",
+                placeholder: "Select platform",
+                options: [
+                  { value: "ui", label: "UI" },
+                  { value: "ux", label: "UX" },
+                  { value: "dev", label: "Development" },
+                  { value: "design", label: "Design" },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "satisfaction",
+        label: "How satisfied are you?",
+        type: "RADIO",
+        options: [
+          { value: "5", label: "Very Satisfied" },
+          { value: "4", label: "Satisfied" },
+          { value: "3", label: "Neutral" },
+          { value: "2", label: "Dissatisfied" },
+          { value: "1", label: "Very Dissatisfied" },
+        ],
+      },
+      {
+        name: "improvements",
+        label: "What areas need improvement?",
+        type: "SELECT",
+        placeholder: "Select areas",
+        options: [
+          { value: "ui", label: "User Interface" },
+          { value: "performance", label: "Performance" },
+          { value: "features", label: "Features" },
+          { value: "docs", label: "Documentation" },
+        ],
+      },
+      {
+        name: "subscribe",
+        label: "Subscribe to newsletter",
+        type: "CHECBOX",
+      },
+    ],
+  },
+  registration: {
+    label: "Registration Form (Horizontal Layout)",
+    value: [
+      {
+        name: "name",
+        label: "Name",
+        type: "TEXT",
+        placeholder: "Enter your name",
+        required: true,
+        validation: {
+          minLength: 3,
+          maxLength: 100,
+        },
+        onConditionMatch: [
+          {
+            if: {
+              properties: {
+                city: {
+                  const: "new york",
+                },
+              },
+            },
+            then: {
+              age: {
+                label: "Age2",
+                type: "NUMBER",
+                placeholder: "Enter your age",
+                required: true,
+              },
+              name: {
+                label: "Name2",
+                type: "TEXT",
+                placeholder: "Enter your name",
+                required: true,
+              },
+            },
+          },
+        ],
+      },
+      {
+        name: "city",
+        label: "City",
+        type: "SELECT",
+        placeholder: "Select your city",
+        options: [
+          { value: "new york", label: "New York" },
+          { value: "los angeles", label: "Los Angeles" },
+          { value: "chicago", label: "Chicago" },
+          { value: "houston", label: "Houston" },
+          { value: "miami", label: "Miami" },
+        ],
+        required: true,
+      },
+      {
+        name: "age",
+        label: "Age",
+        type: "NUMBER",
+        placeholder: "Enter your age",
+        required: true,
+      },
+      {
+        name: "parentName",
+        label: "Parent Name",
+        type: "TEXT",
+        placeholder: "Enter your parent name",
+        required: true,
+        onConditionMatch: [{}],
+      },
+
+      {
+        name: "contactDetails",
+        label: "Contact Details",
+        type: "ARRAY",
+        structure: [
+          {
+            name: "email",
+            label: "Email",
+            type: "TEXT",
+            placeholder: "Enter your email",
+            required: true,
+          },
+          {
+            name: "phone",
+            label: "Phone",
+            type: "TEXT",
+            placeholder: "Enter your phone number",
+          },
+          {
+            name: "socialMedia",
+            label: "Social Media",
+            type: "ARRAY",
+            structure: [
+              {
+                name: "platform",
+                label: "Platform",
+                type: "SELECT",
+                placeholder: "Select platform",
+                options: [
+                  { value: "ui", label: "UI" },
+                  { value: "ux", label: "UX" },
+                  { value: "dev", label: "Development" },
+                  { value: "design", label: "Design" },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "satisfaction",
+        label: "How satisfied are you?",
+        type: "RADIO",
+        options: [
+          { value: "5", label: "Very Satisfied" },
+          { value: "4", label: "Satisfied" },
+          { value: "3", label: "Neutral" },
+          { value: "2", label: "Dissatisfied" },
+          { value: "1", label: "Very Dissatisfied" },
+        ],
+      },
+      {
+        name: "improvements",
+        label: "What areas need improvement?",
+        type: "SELECT",
+        placeholder: "Select areas",
+        options: [
+          { value: "ui", label: "User Interface" },
+          { value: "performance", label: "Performance" },
+          { value: "features", label: "Features" },
+          { value: "docs", label: "Documentation" },
+        ],
+      },
+      {
+        name: "subscribe",
+        label: "Subscribe to newsletter",
+        type: "CHECBOX",
+      },
+    ],
+  },
+} as const;
