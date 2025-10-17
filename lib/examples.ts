@@ -2,9 +2,16 @@ export const FORM_EXAMPLES = {
   contact: {
     label: "Simple Contact Form",
     settings: {
-        enabledebounce: true,
+      enabledebounce: true,
     },
     value: [
+      {
+        name: "dob",
+        label: "Date of Birth",
+        type: "DATE",
+        placeholder: "Select your birth date",
+        required: true,
+      },
       {
         name: "name",
         label: "Full Name",
@@ -26,24 +33,24 @@ export const FORM_EXAMPLES = {
             if: {
               properties: {
                 phoneNumber: {
-                  pattern: "^\\+?[1-9][0-9]{7,14}$"
-                }
-              }
+                  pattern: "^\\+?[1-9][0-9]{7,14}$",
+                },
+              },
             },
             then: {
               preferredContact: {
                 visible: true,
-                required: true
-              }
+                required: true,
+              },
             },
             else: {
               preferredContact: {
                 visible: true,
-                required: false
-              }
-            }
-          }
-        ]
+                required: false,
+              },
+            },
+          },
+        ],
       },
       {
         name: "preferredContact",
@@ -53,8 +60,8 @@ export const FORM_EXAMPLES = {
         options: [
           { value: "phone", label: "Phone" },
           { value: "email", label: "Email" },
-          { value: "both", label: "Both Phone and Email" }
-        ]
+          { value: "both", label: "Both Phone and Email" },
+        ],
       },
       {
         name: "email",

@@ -37,6 +37,10 @@ const TextFormField = dynamic(
   () => import("./fields/TextFormField").then((m) => m.TextFormField),
   { ssr: false }
 );
+const DateFormField = dynamic(
+  () => import("./fields/DateFormField").then((m) => m.DateFormField),
+  { ssr: false }
+);
 import { useFormRegistryContext } from "./hooks/useFormRegistryContext";
 import { FormFieldConfig, FormItemType, FormOption } from "./types";
 
@@ -90,6 +94,14 @@ export function FormField<TFieldValues extends FieldValues>({
         case FormItemType.TEXT:
           return (
             <TextFormField
+              value={(field.value as string) ?? undefined}
+              onChange={handleChange as (v: string) => void}
+              placeholder={state.placeholder}
+            />
+          );
+        case FormItemType.DATE:
+          return (
+            <DateFormField
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
               placeholder={state.placeholder}
