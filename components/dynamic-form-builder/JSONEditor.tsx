@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import {
   Select,
@@ -11,11 +9,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 import { toast } from "sonner";
 // import { formSchema } from "@/lib/types";
+import { FORM_EXAMPLES } from "@/lib/examples";
 import { formatJson } from "@/lib/utils";
 import { Loader2, Wand2 } from "lucide-react";
-import { FORM_EXAMPLES } from "@/lib/examples";
 
 interface JsonEditorProps {
   onValidJson: (json: any) => void;

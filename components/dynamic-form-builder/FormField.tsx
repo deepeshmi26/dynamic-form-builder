@@ -5,25 +5,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormField as RHFFormField,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Control,
   FieldPath,
   FieldValues,
   useFormContext,
 } from "react-hook-form";
-import { ArrayFormField } from "./FormFields/ArrayFormField";
-import { CheckboxFormField } from "./FormFields/CheckboxFormField";
-import { RadioGroupFormField } from "./FormFields/RadioGroupFormField";
-import { SelectFormField } from "./FormFields/SelectFormField";
-import { TextFormField } from "./FormFields/TextFormField";
-import { FormFieldConfig, FormItemType, FormRegistryContextType, StringOption } from "./types";
-
-export const FormRegistryContext = createContext<
-  FormRegistryContextType<FieldValues>
->({});
+import { ArrayFormField } from "./formFields/ArrayFormField";
+import { CheckboxFormField } from "./formFields/CheckboxFormField";
+import { RadioGroupFormField } from "./formFields/RadioGroupFormField";
+import { SelectFormField } from "./formFields/SelectFormField";
+import { TextFormField } from "./formFields/TextFormField";
+import { useFormRegistryContext } from "./hooks/useFormRegistryContext";
+import { FormFieldConfig, FormItemType, FormOption } from "./types";
 
 type Props<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
@@ -48,7 +46,7 @@ export function FormField<TFieldValues extends FieldValues>({
     adapter,
     onChange: globalChangeListener,
     unregister,
-  } = useContext(FormRegistryContext);
+  } = useFormRegistryContext<FieldValues>();
   const form = useFormContext();
 
   useEffect(() => {
@@ -85,7 +83,7 @@ export function FormField<TFieldValues extends FieldValues>({
             <RadioGroupFormField
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
-              options={(state.options || []) as StringOption[]}
+              options={(state.options || []) as FormOption[]}
             />
           );
         case FormItemType.SELECT:
@@ -93,7 +91,7 @@ export function FormField<TFieldValues extends FieldValues>({
             <SelectFormField
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
-              options={(state.options || []) as StringOption[]}
+              options={(state.options || []) as FormOption[]}
               placeholder={state.placeholder}
             />
           );
@@ -131,10 +129,14 @@ export function FormField<TFieldValues extends FieldValues>({
   return (
     <>
       {state.visible !== false && (
-        <FormField
+        <RHFFormField<TFieldValues, FieldPath<TFieldValues>>
           control={control}
           name={name}
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: { value: unknown; onChange: (value: unknown) => void };
+          }) => (
             <FormItem className={cn("space-y-2 sm:space-y-3", "")}>
               <FormLabel
                 required={state.required}

@@ -1,12 +1,12 @@
 "use client";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { StringOption } from "../types";
+import { FormOption } from "../types";
 
 type Props = {
   value?: string;
   onChange?: (value: string) => void;
-  options: StringOption[];
+  options: FormOption[];
 };
 
 export const RadioGroupFormField = ({ value, onChange, options }: Props) => {

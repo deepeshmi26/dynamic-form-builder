@@ -16,6 +16,7 @@ export enum FormItemType {
 export type FormOption = {
   value: string;
   label: string;
+  disabled?: boolean;
 };
 
 export type FormFieldConfig = {
@@ -39,8 +40,6 @@ export type FormFieldConfig = {
     else?: Record<string, Partial<FormFieldConfig>>;
   }[];
 };
-
-export type StringOption = { label: string; value: string; disabled?: boolean };
 
 export type FormGenratorProps<TFieldValues extends FieldValues> = {
   config: (Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> })[];

@@ -7,12 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { StringOption } from "../types";
+import { FormOption } from "../types";
 
 type Props = {
   value?: string;
   onChange?: (value: string) => void;
-  options: StringOption[];
+  options: FormOption[];
   placeholder?: string;
 };
 
