@@ -2,33 +2,35 @@
 
 import {
   FormControl,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import {
   Control,
   FieldPath,
   FieldValues,
   useFormContext,
 } from "react-hook-form";
-import { FormRegistryContext } from "./FormGenerator";
-import { CheckboxFormItem } from "./FormItems/CheckboxFormItem";
-import { RadioGroupFormItem } from "./FormItems/RadioGroupFormItem";
-import { SelectFormItem } from "./FormItems/SelectFormItem";
-import { TextFormItem } from "./FormItems/TextFormItem";
-import { FormFieldConfig, FormItemType, StringOption } from "./types";
-import { ArrayFormItem } from "./FormItems/ArrayFormItem";
+import { ArrayFormField } from "./FormFields/ArrayFormField";
+import { CheckboxFormField } from "./FormFields/CheckboxFormField";
+import { RadioGroupFormField } from "./FormFields/RadioGroupFormField";
+import { SelectFormField } from "./FormFields/SelectFormField";
+import { TextFormField } from "./FormFields/TextFormField";
+import { FormFieldConfig, FormItemType, FormRegistryContextType, StringOption } from "./types";
+
+export const FormRegistryContext = createContext<
+  FormRegistryContextType<FieldValues>
+>({});
 
 type Props<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
   config: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> };
 };
 
-export function FormItemComponent<TFieldValues extends FieldValues>({
+export function FormField<TFieldValues extends FieldValues>({
   control,
   config,
   path,
@@ -72,7 +74,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
       switch (state.type) {
         case FormItemType.TEXT:
           return (
-            <TextFormItem
+            <TextFormField
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
               placeholder={state.placeholder}
@@ -80,7 +82,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           );
         case FormItemType.RADIO:
           return (
-            <RadioGroupFormItem
+            <RadioGroupFormField
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
               options={(state.options || []) as StringOption[]}
@@ -88,7 +90,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           );
         case FormItemType.SELECT:
           return (
-            <SelectFormItem
+            <SelectFormField
               value={(field.value as string) ?? undefined}
               onChange={handleChange as (v: string) => void}
               options={(state.options || []) as StringOption[]}
@@ -97,7 +99,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           );
         case FormItemType.ARRAY:
           return (
-            <ArrayFormItem
+            <ArrayFormField
               name={name}
               structure={state.structure}
               path={path ?? ""}
@@ -105,7 +107,7 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           );
         case FormItemType.CHECKBOX:
           return (
-            <CheckboxFormItem
+            <CheckboxFormField
               value={Boolean(field.value)}
               onChange={handleChange as (v: boolean) => void}
             />
@@ -134,7 +136,10 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
           name={name}
           render={({ field }) => (
             <FormItem className={cn("space-y-2 sm:space-y-3", "")}>
-              <FormLabel required={state.required} className={cn("text-sm sm:text-base", "")}>
+              <FormLabel
+                required={state.required}
+                className={cn("text-sm sm:text-base", "")}
+              >
                 {label}
               </FormLabel>
               <FormControl>

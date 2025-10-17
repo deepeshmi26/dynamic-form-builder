@@ -1,7 +1,7 @@
 "use client";
 
-import { FormGenerator } from "@/components/form/FormGenerator";
-import { FormFieldConfig } from "@/components/form/types";
+import { FormBuilder } from "@/components/dynamic-form-builder/FormBuilder";
+import { FormFieldConfig } from "@/components/dynamic-form-builder/types";
 import { Button } from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
 
@@ -10,7 +10,7 @@ export function ExampleForm({ config }: { config: FormFieldConfig[] }) {
     console.log(values);
   };
 
-  const handleGlobalChange = (
+  const onChange = (
     fieldName: string,
     value: unknown,
     allValues: FieldValues
@@ -20,34 +20,12 @@ export function ExampleForm({ config }: { config: FormFieldConfig[] }) {
   };
 
   return (
-    <FormGenerator
-      config={config}
-      onSubmit={handleSubmit}
-      onChange={handleGlobalChange}
-    >
+    <FormBuilder config={config} onSubmit={handleSubmit} onChange={onChange}>
       <div className="flex">
         <Button type="submit" className="w-full sm:w-auto">
           Submit
         </Button>
       </div>
-    </FormGenerator>
+    </FormBuilder>
   );
 }
-
-export const sampleInitialValues = {
-  name: "John Doe",
-  contactDetails: [
-    {
-      email: "john@example.com",
-      phone: "123-456-7890",
-      socialMedia: [
-        {
-          platform: "ui",
-        },
-      ],
-    },
-  ],
-  satisfaction: "4",
-  improvements: "ui",
-  subscribe: true,
-};

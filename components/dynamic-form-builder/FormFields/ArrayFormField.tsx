@@ -1,5 +1,5 @@
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { FormItemComponent } from "../FormComponent";
+import { FormField } from "../FormField";
 import { FormFieldConfig } from "../types";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   path: string;
 };
 
-export function ArrayFormItem({ name, structure, path }: Props) {
+export function ArrayFormField({ name, structure, path }: Props) {
   const { control } = useFormContext();
   name = `${path}.${name}`;
   const { fields, append, remove } = useFieldArray({
@@ -22,7 +22,7 @@ export function ArrayFormItem({ name, structure, path }: Props) {
         <div key={field.id}>
           <div>Item {index + 1}</div>
           {structure.map((item) => (
-            <FormItemComponent
+            <FormField
               key={`${name}.${index}.${item.name}`}
               control={control}
               config={{ ...item, name: `${name}.${index}.${item.name}` }}

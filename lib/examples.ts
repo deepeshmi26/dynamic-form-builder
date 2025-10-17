@@ -14,6 +14,46 @@ export const FORM_EXAMPLES = {
         },
       },
       {
+        name: "phoneNumber",
+        label: "Phone Number",
+        type: "TEXT",
+        placeholder: "Enter your phone number",
+        onConditionMatch: [
+          {
+            if: {
+              properties: {
+                phoneNumber: {
+                  pattern: "^\\+?[1-9][0-9]{7,14}$"
+                }
+              }
+            },
+            then: {
+              preferredContact: {
+                visible: true,
+                required: true
+              }
+            },
+            else: {
+              preferredContact: {
+                visible: true,
+                required: false
+              }
+            }
+          }
+        ]
+      },
+      {
+        name: "preferredContact",
+        label: "Preferred Contact Method",
+        type: "SELECT",
+        placeholder: "Select contact method",
+        options: [
+          { value: "phone", label: "Phone" },
+          { value: "email", label: "Email" },
+          { value: "both", label: "Both Phone and Email" }
+        ]
+      },
+      {
         name: "email",
         label: "Email Address",
         type: "TEXT",

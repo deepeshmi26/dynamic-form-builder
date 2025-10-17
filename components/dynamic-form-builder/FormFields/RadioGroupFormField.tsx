@@ -9,7 +9,7 @@ type Props = {
   options: StringOption[];
 };
 
-export const RadioGroupFormItem = ({ value, onChange, options }: Props) => {
+export const RadioGroupFormField = ({ value, onChange, options }: Props) => {
   return (
     <RadioGroup
       onValueChange={onChange}

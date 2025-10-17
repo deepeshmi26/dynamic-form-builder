@@ -1,11 +1,12 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
+import { mergeDeep } from "@/lib/utils";
 import { ajvResolver } from "@hookform/resolvers/ajv";
+import { JSONSchemaType } from "ajv";
 import { createContext, useCallback, useRef } from "react";
 import {
   Control,
-  DefaultValues,
   FieldPath,
   FieldValues,
   Path,
@@ -13,124 +14,36 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { FormItemComponent } from "./FormComponent";
-import { AjvValidator } from "./resolvers";
-import { FormFieldConfig } from "./types";
+import { FormField } from "./FormField";
+import { AjvValidator } from "./Validators/AjvValidator";
+import {
+  ChangeRule,
+  FormFieldConfig,
+  FormGenratorProps,
+  FormRegistryContextType,
+  RegistryEntry,
+} from "./types.ts";
 
 const FormResolver = ajvResolver;
 const Validator = new AjvValidator();
-
-type Props<TFieldValues extends FieldValues> = {
-  config: (Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> })[];
-  onSubmit?: SubmitHandler<TFieldValues>;
-  adapter?: Record<
-    string,
-    React.ComponentType<{
-      value?: unknown;
-      onChange?: (value: unknown) => void;
-      [key: string]: unknown;
-    }>
-  >;
-  initialValues?: DefaultValues<TFieldValues>;
-  onChange?: (
-    fieldName: string,
-    value: unknown,
-    allValues: TFieldValues
-  ) => void;
-  registerOnChangeRecord?: (fieldConfig: FormFieldConfig) => void;
-};
-
-type RegistryEntry<TFieldValues extends FieldValues> = {
-  config: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> };
-  initialConfig: Omit<FormFieldConfig, "name"> & {
-    name: FieldPath<TFieldValues>;
-  };
-  setState: (state: unknown) => void;
-};
-
-type ChangeRule<TFieldValues extends FieldValues> = {
-  if: object;
-  then: Record<string, Partial<FormFieldConfig>>;
-  else: Record<string, Partial<FormFieldConfig>>;
-  target: Path<TFieldValues>;
-};
-
-type FormRegistryContextType<TFieldValues extends FieldValues> = {
-  register?: (
-    name: Path<TFieldValues>,
-    config: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> },
-    setStateCall: (state: TFieldValues[keyof TFieldValues]) => void
-  ) => void;
-  unregister?: (name: Path<TFieldValues>) => void;
-  registry?: Record<string, RegistryEntry<TFieldValues>>;
-  onChangeRecord?: Record<string, ChangeRule<TFieldValues>[]>;
-  registerOnChangeRecord?: (fieldConfig: FormFieldConfig) => void;
-  updateState?: (
-    newConfig: Omit<FormFieldConfig, "name"> & {
-      name: string;
-    }
-  ) => void;
-  adapter?: Record<
-    string,
-    React.ComponentType<{
-      value?: unknown;
-      onChange?: (value: unknown) => void;
-      [key: string]: unknown;
-    }>
-  >;
-  onChange?: (
-    fieldName: string,
-    value: unknown,
-    allValues: TFieldValues
-  ) => void;
-};
 
 export const FormRegistryContext = createContext<
   FormRegistryContextType<FieldValues>
 >({});
 
-function mergeDeep<TTarget extends Record<string, unknown>>(
-  target: TTarget,
-  ...sources: Record<string, unknown>[]
-): TTarget {
-  const output: Record<string, unknown> = { ...target };
-  for (const source of sources) {
-    for (const key of Object.keys(source)) {
-      const sourceValue = source[key];
-      const targetValue = output[key];
-      if (
-        sourceValue &&
-        typeof sourceValue === "object" &&
-        !Array.isArray(sourceValue) &&
-        targetValue &&
-        typeof targetValue === "object" &&
-        !Array.isArray(targetValue)
-      ) {
-        output[key] = mergeDeep(
-          targetValue as Record<string, unknown>,
-          sourceValue as Record<string, unknown>
-        );
-      } else {
-        output[key] = sourceValue;
-      }
-    }
-  }
-  return output as TTarget;
-}
-
-export function FormGenerator<TFieldValues extends FieldValues>({
+export function FormBuilder<TFieldValues extends FieldValues>({
   config,
   onSubmit,
   children,
   adapter,
   initialValues,
   onChange,
-}: React.PropsWithChildren<Props<TFieldValues>>) {
+}: React.PropsWithChildren<FormGenratorProps<TFieldValues>>) {
   const form = useForm<TFieldValues>({
     defaultValues: initialValues,
     mode: "onChange",
     resolver: FormResolver(
-      Validator.generateSchema(config)
+      Validator.generateSchema(config) as JSONSchemaType<unknown>
     ) as Resolver<TFieldValues>,
   });
 
@@ -163,12 +76,9 @@ export function FormGenerator<TFieldValues extends FieldValues>({
       const { name, onConditionMatch } = fieldConfig;
       if (!onConditionMatch?.length) return;
 
-      // ✅ Avoid re-registering the same field's conditions
       if (registry.current?.[name]) return;
 
       onConditionMatch.forEach((rule) => {
-        // Example rule: { if: { properties: { country: { const: "India" } } }, then: { ... }, else: { ... } }
-
         const conditionFields = Object.keys(rule.if?.properties || {});
         conditionFields.forEach((depField) => {
           if (!onChangeRecord.current![depField]) {
@@ -176,7 +86,6 @@ export function FormGenerator<TFieldValues extends FieldValues>({
           }
 
           onChangeRecord.current![depField].push({
-            // store the AJV compiled validator for performance
             if: rule.if || {},
             then: rule.then || {},
             else: rule.else || {},
@@ -238,7 +147,6 @@ export function FormGenerator<TFieldValues extends FieldValues>({
             const { isValid } = validator.validate(rule.if, allValues);
             if (isValid) {
               Object.keys(rule.then).forEach((key) => {
-                //Merge rule.then[key] with collectedChange[key]
                 collectedChange[key] = mergeDeep(
                   collectedChange[key] as Record<string, unknown>,
                   rule.then[key] as Record<string, unknown>
@@ -246,7 +154,6 @@ export function FormGenerator<TFieldValues extends FieldValues>({
               });
             } else {
               if (Object.keys(rule.else || {}).length > 0) {
-                // If else condition has keys, apply those changes
                 Object.keys(rule.else).forEach((key) => {
                   collectedChange[key] = mergeDeep(
                     collectedChange[key] as Record<string, unknown>,
@@ -254,7 +161,6 @@ export function FormGenerator<TFieldValues extends FieldValues>({
                   );
                 });
               } else {
-                // If no else condition, reset the fields from 'then' to initial values
                 Object.keys(rule.then).forEach((key) => {
                   const target = registry.current?.[key];
                   if (target?.initialConfig) {
@@ -265,7 +171,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
             }
           }
         );
-        
+
         Object.keys(collectedChange).forEach((targetFieldName) => {
           const target = registry.current?.[targetFieldName];
           if (!target) return;
@@ -287,7 +193,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
     <Form {...form}>
       <FormRegistryContext.Provider
         value={{
-          registry: registry.current as unknown as Record<
+          registry: registry.current as Record<
             string,
             RegistryEntry<FieldValues>
           >,
@@ -324,7 +230,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
       >
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {config.map((field) => (
-            <FormItemComponent
+            <FormField
               key={field.name}
               control={form.control as Control<TFieldValues>}
               config={field}

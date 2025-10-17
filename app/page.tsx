@@ -1,11 +1,11 @@
 "use client";
-import { JsonEditor } from "@/components/form/JSONEditor";
+import { JsonEditor } from "@/components/dynamic-form-builder/JSONEditor";
 import { ExampleForm } from "./ExampleForm";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { FormFieldConfig } from "@/components/form/types";
+import { FormFieldConfig } from "@/components/dynamic-form-builder/types";
 
 export default function Home() {
   const [open, setOpen] = useState(false);

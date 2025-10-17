@@ -16,7 +16,7 @@ type Props = {
   placeholder?: string;
 };
 
-export const SelectFormItem = ({
+export const SelectFormField = ({
   value,
   onChange,
   options,

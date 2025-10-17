@@ -8,7 +8,7 @@ type Props = {
   placeholder?: string;
 };
 
-export const TextFormItem = ({ value, onChange, placeholder }: Props) => {
+export const TextFormField = ({ value, onChange, placeholder }: Props) => {
   return (
     <Input
       value={value || ""}
