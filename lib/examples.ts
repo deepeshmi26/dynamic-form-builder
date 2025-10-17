@@ -1,419 +1,129 @@
 export const FORM_EXAMPLES = {
   contact: {
-    label: "Contact Form (Inline Layout)",
+    label: "Simple Contact Form",
     value: [
       {
         name: "name",
-        label: "Name",
+        label: "Full Name",
         type: "TEXT",
-        placeholder: "Enter your name",
+        placeholder: "Enter your full name",
         required: true,
         validation: {
-          minLength: 3,
-          maxLength: 100,
-        },
-        onConditionMatch: [
-          {
-            if: {
-              properties: {
-                city: {
-                  const: "new york",
-                },
-              },
-            },
-            then: {
-              age: {
-                label: "Age2",
-                type: "NUMBER",
-                placeholder: "Enter your age",
-                required: true,
-              },
-              name: {
-                label: "Name2",
-                type: "TEXT",
-                placeholder: "Enter your name",
-                required: true,
-              },
-            },
-          },
-        ],
+          minLength: 2,
+          maxLength: 50,
+        }
       },
       {
-        name: "city",
-        label: "City",
-        type: "SELECT",
-        placeholder: "Select your city",
-        options: [
-          { value: "new york", label: "New York" },
-          { value: "los angeles", label: "Los Angeles" },
-          { value: "chicago", label: "Chicago" },
-          { value: "houston", label: "Houston" },
-          { value: "miami", label: "Miami" },
-        ],
+        name: "email",
+        label: "Email Address",
+        type: "TEXT", 
+        placeholder: "Enter your email",
         required: true,
+        validation: {
+          pattern: "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+        }
       },
       {
-        name: "age",
-        label: "Age",
-        type: "NUMBER",
-        placeholder: "Enter your age",
-        required: true,
-      },
-      {
-        name: "parentName",
-        label: "Parent Name",
-        type: "TEXT",
-        placeholder: "Enter your parent name",
-        required: true,
-        onConditionMatch: [{}],
-      },
-
-      {
-        name: "contactDetails",
-        label: "Contact Details",
-        type: "ARRAY",
-        structure: [
-          {
-            name: "email",
-            label: "Email",
-            type: "TEXT",
-            placeholder: "Enter your email",
-            required: true,
-          },
-          {
-            name: "phone",
-            label: "Phone",
-            type: "TEXT",
-            placeholder: "Enter your phone number",
-          },
-          {
-            name: "socialMedia",
-            label: "Social Media",
-            type: "ARRAY",
-            structure: [
-              {
-                name: "platform",
-                label: "Platform",
-                type: "SELECT",
-                placeholder: "Select platform",
-                options: [
-                  { value: "ui", label: "UI" },
-                  { value: "ux", label: "UX" },
-                  { value: "dev", label: "Development" },
-                  { value: "design", label: "Design" },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "satisfaction",
-        label: "How satisfied are you?",
-        type: "RADIO",
-        options: [
-          { value: "5", label: "Very Satisfied" },
-          { value: "4", label: "Satisfied" },
-          { value: "3", label: "Neutral" },
-          { value: "2", label: "Dissatisfied" },
-          { value: "1", label: "Very Dissatisfied" },
-        ],
-      },
-      {
-        name: "improvements",
-        label: "What areas need improvement?",
-        type: "SELECT",
-        placeholder: "Select areas",
-        options: [
-          { value: "ui", label: "User Interface" },
-          { value: "performance", label: "Performance" },
-          { value: "features", label: "Features" },
-          { value: "docs", label: "Documentation" },
-        ],
-      },
-      {
-        name: "subscribe",
-        label: "Subscribe to newsletter",
-        type: "CHECBOX",
-      },
-    ],
+        name: "message",
+        label: "Message",
+        type: "TEXTAREA",
+        placeholder: "Enter your message",
+        required: true
+      }
+    ]
   },
-  survey: {
-    label: "Survey Form (Vertical Layout)",
+
+  feedback: {
+    label: "Product Feedback Form",
     value: [
       {
-        name: "name",
-        label: "Name",
-        type: "TEXT",
-        placeholder: "Enter your name",
-        required: true,
-        validation: {
-          minLength: 3,
-          maxLength: 100,
-        },
-        onConditionMatch: [
-          {
-            if: {
-              properties: {
-                city: {
-                  const: "new york",
-                },
-              },
-            },
-            then: {
-              age: {
-                label: "Age2",
-                type: "NUMBER",
-                placeholder: "Enter your age",
-                required: true,
-              },
-              name: {
-                label: "Name2",
-                type: "TEXT",
-                placeholder: "Enter your name",
-                required: true,
-              },
-            },
-          },
-        ],
-      },
-      {
-        name: "city",
-        label: "City",
-        type: "SELECT",
-        placeholder: "Select your city",
-        options: [
-          { value: "new york", label: "New York" },
-          { value: "los angeles", label: "Los Angeles" },
-          { value: "chicago", label: "Chicago" },
-          { value: "houston", label: "Houston" },
-          { value: "miami", label: "Miami" },
-        ],
-        required: true,
-      },
-      {
-        name: "age",
-        label: "Age",
-        type: "NUMBER",
-        placeholder: "Enter your age",
-        required: true,
-      },
-      {
-        name: "parentName",
-        label: "Parent Name",
-        type: "TEXT",
-        placeholder: "Enter your parent name",
-        required: true,
-        onConditionMatch: [{}],
-      },
-
-      {
-        name: "contactDetails",
-        label: "Contact Details",
-        type: "ARRAY",
-        structure: [
-          {
-            name: "email",
-            label: "Email",
-            type: "TEXT",
-            placeholder: "Enter your email",
-            required: true,
-          },
-          {
-            name: "phone",
-            label: "Phone",
-            type: "TEXT",
-            placeholder: "Enter your phone number",
-          },
-          {
-            name: "socialMedia",
-            label: "Social Media",
-            type: "ARRAY",
-            structure: [
-              {
-                name: "platform",
-                label: "Platform",
-                type: "SELECT",
-                placeholder: "Select platform",
-                options: [
-                  { value: "ui", label: "UI" },
-                  { value: "ux", label: "UX" },
-                  { value: "dev", label: "Development" },
-                  { value: "design", label: "Design" },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "satisfaction",
-        label: "How satisfied are you?",
+        name: "productRating",
+        label: "How would you rate our product?",
         type: "RADIO",
+        required: true,
         options: [
-          { value: "5", label: "Very Satisfied" },
-          { value: "4", label: "Satisfied" },
-          { value: "3", label: "Neutral" },
-          { value: "2", label: "Dissatisfied" },
-          { value: "1", label: "Very Dissatisfied" },
-        ],
+          { value: "5", label: "Excellent" },
+          { value: "4", label: "Good" },
+          { value: "3", label: "Average" },
+          { value: "2", label: "Fair" },
+          { value: "1", label: "Poor" }
+        ]
+      },
+      {
+        name: "usageFrequency",
+        label: "How often do you use our product?",
+        type: "SELECT",
+        placeholder: "Select frequency",
+        required: true,
+        options: [
+          { value: "daily", label: "Daily" },
+          { value: "weekly", label: "Weekly" },
+          { value: "monthly", label: "Monthly" },
+          { value: "rarely", label: "Rarely" }
+        ]
       },
       {
         name: "improvements",
-        label: "What areas need improvement?",
-        type: "SELECT",
-        placeholder: "Select areas",
+        label: "What could we improve?",
+        type: "CHECKBOX",
         options: [
           { value: "ui", label: "User Interface" },
-          { value: "performance", label: "Performance" },
+          { value: "speed", label: "Performance" },
           { value: "features", label: "Features" },
-          { value: "docs", label: "Documentation" },
-        ],
+          { value: "support", label: "Customer Support" }
+        ]
       },
       {
-        name: "subscribe",
-        label: "Subscribe to newsletter",
-        type: "CHECBOX",
-      },
-    ],
+        name: "comments",
+        label: "Additional Comments",
+        type: "TEXTAREA",
+        placeholder: "Share your thoughts..."
+      }
+    ]
   },
-  registration: {
-    label: "Registration Form (Horizontal Layout)",
+
+  subscription: {
+    label: "Newsletter Subscription",
     value: [
       {
-        name: "name",
-        label: "Name",
+        name: "email",
+        label: "Email Address",
         type: "TEXT",
-        placeholder: "Enter your name",
+        placeholder: "Enter your email",
         required: true,
         validation: {
-          minLength: 3,
-          maxLength: 100,
-        },
-        onConditionMatch: [
-          {
-            if: {
-              properties: {
-                city: {
-                  const: "new york",
-                },
-              },
-            },
-            then: {
-              age: {
-                label: "Age2",
-                type: "NUMBER",
-                placeholder: "Enter your age",
-                required: true,
-              },
-              name: {
-                label: "Name2",
-                type: "TEXT",
-                placeholder: "Enter your name",
-                required: true,
-              },
-            },
-          },
-        ],
+          pattern: "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+        }
       },
       {
-        name: "city",
-        label: "City",
-        type: "SELECT",
-        placeholder: "Select your city",
+        name: "interests",
+        label: "Topics of Interest",
+        type: "CHECKBOX",
+        required: true,
         options: [
-          { value: "new york", label: "New York" },
-          { value: "los angeles", label: "Los Angeles" },
-          { value: "chicago", label: "Chicago" },
-          { value: "houston", label: "Houston" },
-          { value: "miami", label: "Miami" },
-        ],
-        required: true,
+          { value: "tech", label: "Technology" },
+          { value: "design", label: "Design" },
+          { value: "business", label: "Business" },
+          { value: "lifestyle", label: "Lifestyle" }
+        ]
       },
       {
-        name: "age",
-        label: "Age",
-        type: "NUMBER",
-        placeholder: "Enter your age",
-        required: true,
-      },
-      {
-        name: "parentName",
-        label: "Parent Name",
-        type: "TEXT",
-        placeholder: "Enter your parent name",
-        required: true,
-        onConditionMatch: [{}],
-      },
-
-      {
-        name: "contactDetails",
-        label: "Contact Details",
-        type: "ARRAY",
-        structure: [
-          {
-            name: "email",
-            label: "Email",
-            type: "TEXT",
-            placeholder: "Enter your email",
-            required: true,
-          },
-          {
-            name: "phone",
-            label: "Phone",
-            type: "TEXT",
-            placeholder: "Enter your phone number",
-          },
-          {
-            name: "socialMedia",
-            label: "Social Media",
-            type: "ARRAY",
-            structure: [
-              {
-                name: "platform",
-                label: "Platform",
-                type: "SELECT",
-                placeholder: "Select platform",
-                options: [
-                  { value: "ui", label: "UI" },
-                  { value: "ux", label: "UX" },
-                  { value: "dev", label: "Development" },
-                  { value: "design", label: "Design" },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "satisfaction",
-        label: "How satisfied are you?",
+        name: "frequency",
+        label: "Email Frequency",
         type: "RADIO",
+        required: true,
         options: [
-          { value: "5", label: "Very Satisfied" },
-          { value: "4", label: "Satisfied" },
-          { value: "3", label: "Neutral" },
-          { value: "2", label: "Dissatisfied" },
-          { value: "1", label: "Very Dissatisfied" },
-        ],
+          { value: "daily", label: "Daily Digest" },
+          { value: "weekly", label: "Weekly Roundup" },
+          { value: "monthly", label: "Monthly Newsletter" }
+        ]
       },
       {
-        name: "improvements",
-        label: "What areas need improvement?",
-        type: "SELECT",
-        placeholder: "Select areas",
-        options: [
-          { value: "ui", label: "User Interface" },
-          { value: "performance", label: "Performance" },
-          { value: "features", label: "Features" },
-          { value: "docs", label: "Documentation" },
-        ],
-      },
-      {
-        name: "subscribe",
-        label: "Subscribe to newsletter",
-        type: "CHECBOX",
-      },
-    ],
-  },
+        name: "terms",
+        label: "I agree to receive marketing emails",
+        type: "CHECKBOX",
+        required: true
+      }
+    ]
+  }
 } as const;

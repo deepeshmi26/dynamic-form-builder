@@ -1,13 +1,11 @@
 "use client";
 
-import configJson from "./config.json";
 import { FormGenerator } from "@/components/form/FormGenerator";
 import { FormFieldConfig } from "@/components/form/types";
 import { Button } from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
 
-export function ExampleForm() {
-  const config = configJson as FormFieldConfig[];
+export function ExampleForm({ config }: { config: FormFieldConfig[] }) {
   const handleSubmit = (values: FieldValues) => {
     console.log(values);
   };
