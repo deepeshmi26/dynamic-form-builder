@@ -15,11 +15,11 @@ import {
   FieldValues,
   useFormContext,
 } from "react-hook-form";
-import { ArrayFormField } from "./formFields/ArrayFormField";
-import { CheckboxFormField } from "./formFields/CheckboxFormField";
-import { RadioGroupFormField } from "./formFields/RadioGroupFormField";
-import { SelectFormField } from "./formFields/SelectFormField";
-import { TextFormField } from "./formFields/TextFormField";
+import { ArrayFormField } from "./fields/ArrayFormField";
+import { CheckboxFormField } from "./fields/CheckboxFormField";
+import { RadioGroupFormField } from "./fields/RadioGroupFormField";
+import { SelectFormField } from "./fields/SelectFormField";
+import { TextFormField } from "./fields/TextFormField";
 import { useFormRegistryContext } from "./hooks/useFormRegistryContext";
 import { FormFieldConfig, FormItemType, FormOption } from "./types";
 
