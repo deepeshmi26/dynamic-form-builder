@@ -1,6 +1,6 @@
 "use client";
 import { JsonEditor } from "@/components/dynamic-form-builder/JSONEditor";
-import { FormFieldConfig } from "@/components/dynamic-form-builder/types";
+import { FormConfig } from "@/components/dynamic-form-builder/types";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
@@ -9,10 +9,9 @@ import { FormView } from "./FormView";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
-  const [config, setConfig] = useState<FormFieldConfig[]>([]);
-  const handleValidJson = (json: FormFieldConfig[]) => {
-    console.log(json);
-    setConfig(json);
+  const [formConfig, setFormConfig] = useState<FormConfig>({});
+  const handleValidJson = (json: FormConfig) => {
+    setFormConfig(json);
   };
 
   return (
@@ -33,7 +32,7 @@ export default function Home() {
 
             <JsonEditor
               onValidJson={(json) => {
-                handleValidJson(json);
+                handleValidJson(json as FormConfig);
                 setOpen(false);
               }}
             />
@@ -51,7 +50,7 @@ export default function Home() {
         <div className="w-1/2 bg-white p-6 overflow-y-auto">
           <h1 className="text-3xl font-bold">Form Preview</h1>
           <div className="pt-6">
-            <FormView config={config} />
+            <FormView config={formConfig} />
           </div>
         </div>
       </div>
@@ -60,7 +59,7 @@ export default function Home() {
       <div className="lg:hidden p-6 overflow-y-auto">
         <h1 className="text-3xl font-bold mt-16">Form Preview</h1>
         <div className="pt-6">
-          <FormView config={config} />
+          <FormView config={formConfig} />
         </div>
       </div>
     </div>

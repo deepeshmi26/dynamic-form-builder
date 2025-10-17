@@ -32,7 +32,7 @@ export const FormRegistryContext = createContext<
 >({});
 
 export function FormGenerator<TFieldValues extends FieldValues>({
-  config,
+  formConfig: config,
   onSubmit,
   children,
   adapter,
@@ -233,7 +233,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
             <FormField
               key={field.name}
               control={form.control as Control<TFieldValues>}
-              config={field}
+              field={field}
             />
           ))}
           {children}

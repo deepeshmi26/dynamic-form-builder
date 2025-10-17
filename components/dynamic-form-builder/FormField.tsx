@@ -53,16 +53,18 @@ const DateFormField = dynamic(
   { ssr: false }
 );
 import { useFormRegistryContext } from "./hooks/useFormRegistryContext";
-import { FormFieldConfig, FormItemType, FormOption } from "./types";
+import { FormConfig, FormFieldConfig, FormItemType, FormOption } from "./types";
 
 type Props<TFieldValues extends FieldValues> = {
+  settings: FormConfig["settings"];
   control: Control<TFieldValues>;
-  config: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> };
+  field: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> };
 };
 
 export function FormField<TFieldValues extends FieldValues>({
+  settings,
   control,
-  config,
+  field: config,
   path,
 }: Props<TFieldValues> & { path?: string }) {
   const [state, setState] = useState<FieldValues[keyof FieldValues]>(config);

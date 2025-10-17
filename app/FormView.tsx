@@ -1,12 +1,12 @@
 "use client";
 
 import { FormBuilder } from "@/components/dynamic-form-builder/FormBuilder";
-import { FormFieldConfig } from "@/components/dynamic-form-builder/types";
 import { Button } from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
 import { ArrayInlineAdapter } from "./Adapter";
+import { FormConfig } from "@/components/dynamic-form-builder/types";
 
-export function FormView({ config }: { config: FormFieldConfig[] }) {
+export function FormView({ config }: { config: FormConfig }) {
   const handleSubmit = (values: FieldValues) => {
     console.log(values);
   };
@@ -33,7 +33,7 @@ export function FormView({ config }: { config: FormFieldConfig[] }) {
           );
         },
       }}
-      config={config}
+      formConfig={config}
       onSubmit={handleSubmit}
       onChange={onChange}
     >

@@ -25,7 +25,7 @@ export function ArrayFormField({ name, structure, path }: Props) {
             <FormField
               key={`${name}.${index}.${item.name}`}
               control={control}
-              config={{ ...item, name: `${name}.${index}.${item.name}` }}
+              field={{ ...item, name: `${name}.${index}.${item.name}` }}
             />
           ))}
           <button type="button" onClick={() => remove(index)}>

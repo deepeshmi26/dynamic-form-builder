@@ -16,10 +16,10 @@ import { toast } from "sonner";
 import { FORM_EXAMPLES } from "@/lib/examples";
 import { formatJson } from "@/lib/utils";
 import { Loader2, Wand2 } from "lucide-react";
-import { FormFieldConfig } from "./types";
+import { FormConfig } from "./types";
 
 interface JsonEditorProps {
-  onValidJson: (json: FormFieldConfig[]) => void;
+  onValidJson: (json: FormConfig) => void;
 }
 
 export function JsonEditor({ onValidJson }: JsonEditorProps) {
@@ -67,7 +67,7 @@ export function JsonEditor({ onValidJson }: JsonEditorProps) {
 
   const loadExample = (key: keyof typeof FORM_EXAMPLES) => {
     const example = FORM_EXAMPLES[key];
-    const formattedExample = JSON.stringify(example.value, null, 2);
+    const formattedExample = JSON.stringify(example, null, 2);
     setJsonInput(formattedExample);
   };
 

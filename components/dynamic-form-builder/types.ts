@@ -22,6 +22,15 @@ export type FormOption = {
   disabled?: boolean;
 };
 
+export type FormConfig = {
+  label?: string;
+  settings?: {
+    enabledebounce: boolean;
+    layout?: "inline" | "vertical" | "horizontal";
+  };
+  fields?: FormFieldConfig[];
+};
+
 export type FormFieldConfig = {
   name: string;
   label: string;
@@ -45,7 +54,7 @@ export type FormFieldConfig = {
 };
 
 export type FormGenratorProps<TFieldValues extends FieldValues> = {
-  config: (Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> })[];
+  formConfig: FormConfig;
   onSubmit?: SubmitHandler<TFieldValues>;
   adapter?: Record<
     string,

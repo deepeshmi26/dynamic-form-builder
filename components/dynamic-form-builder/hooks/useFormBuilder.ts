@@ -26,17 +26,18 @@ const FormResolver = ajvResolver;
 const Validator = new AjvValidator();
 
 export function useFormBuilder<TFieldValues extends FieldValues>({
-  config,
+  formConfig,
   onSubmit,
   adapter,
   initialValues,
   onChange,
 }: FormGenratorProps<TFieldValues>) {
+  const fields = formConfig.fields;
   const form = useForm<TFieldValues>({
     defaultValues: initialValues,
     mode: "onChange",
     resolver: FormResolver(
-      Validator.generateSchema(config) as JSONSchemaType<unknown>
+      Validator.generateSchema(fields || []) as JSONSchemaType<unknown>
     ) as Resolver<TFieldValues>,
   });
 

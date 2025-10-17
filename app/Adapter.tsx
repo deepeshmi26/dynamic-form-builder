@@ -28,7 +28,7 @@ export function ArrayInlineAdapter({ name, structure, path }: Props) {
               <div key={`${name}.${index}.${item.name}`}>
                 <FormField
                   control={control}
-                  config={{ ...item, name: `${name}.${index}.${item.name}` }}
+                  field={{ ...item, name: `${name}.${index}.${item.name}` }}
                 />
               </div>
             ))}

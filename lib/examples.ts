@@ -2,9 +2,10 @@ export const FORM_EXAMPLES = {
   contact: {
     label: "Simple Contact Form",
     settings: {
+      layout: "inline",
       enabledebounce: true,
     },
-    value: [
+    fields: [
       {
         name: "dob",
         label: "Date of Birth",
@@ -122,7 +123,7 @@ export const FORM_EXAMPLES = {
 
   feedback: {
     label: "Product Feedback Form",
-    value: [
+    fields: [
       {
         name: "productRating",
         label: "How would you rate our product?",
@@ -171,7 +172,7 @@ export const FORM_EXAMPLES = {
 
   subscription: {
     label: "Newsletter Subscription",
-    value: [
+    fields: [
       {
         name: "email",
         label: "Email Address",
@@ -216,7 +217,7 @@ export const FORM_EXAMPLES = {
 
   jobApplication: {
     label: "Job Application Form",
-    value: [
+    fields: [
       {
         name: "position",
         label: "Position Applied For",
@@ -318,7 +319,7 @@ export const FORM_EXAMPLES = {
 
   dynamicSurvey: {
     label: "Dynamic Customer Survey",
-    value: [
+    fields: [
       {
         name: "customerType",
         label: "What type of customer are you?",
