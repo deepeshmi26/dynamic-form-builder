@@ -61,6 +61,7 @@ type FormRegistryContextType<TFieldValues extends FieldValues> = {
     config: Omit<FormFieldConfig, "name"> & { name: FieldPath<TFieldValues> },
     setStateCall: (state: TFieldValues[keyof TFieldValues]) => void
   ) => void;
+  unregister?: (name: Path<TFieldValues>) => void;
   registry?: Record<string, RegistryEntry<TFieldValues>>;
   onChangeRecord?: Record<string, ChangeRule<TFieldValues>[]>;
   registerOnChangeRecord?: (fieldConfig: FormFieldConfig) => void;
@@ -187,6 +188,18 @@ export function FormGenerator<TFieldValues extends FieldValues>({
     [onChangeRecord]
   );
 
+  const unregister = useCallback(
+    (name: Path<TFieldValues>) => {
+      if (registry.current?.[name]) {
+        delete registry.current[name as string];
+      }
+      if (onChangeRecord.current?.[name]) {
+        delete onChangeRecord.current[name as string];
+      }
+    },
+    [registry, onChangeRecord]
+  );
+
   const register = useCallback(
     (
       name: string,
@@ -252,8 +265,7 @@ export function FormGenerator<TFieldValues extends FieldValues>({
             }
           }
         );
-
-        // Merge collected changes into existing registered field configs
+        
         Object.keys(collectedChange).forEach((targetFieldName) => {
           const target = registry.current?.[targetFieldName];
           if (!target) return;
@@ -290,6 +302,9 @@ export function FormGenerator<TFieldValues extends FieldValues>({
           adapter: {
             ...adapter,
           },
+          unregister: unregister as unknown as (
+            name: Path<FieldValues>
+          ) => void,
           updateState: updateState as unknown as (
             newConfig: Omit<FormFieldConfig, "name"> & { name: string }
           ) => void,

@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   Control,
   FieldPath,
@@ -36,16 +36,25 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
   const [state, setState] = useState<FieldValues[keyof FieldValues]>(config);
   const name = config.name;
   const label = state.label;
+
+  useEffect(() => {
+    setState(config);
+  }, [config]);
+
   const {
     register,
     adapter,
     onChange: globalChangeListener,
+    unregister,
   } = useContext(FormRegistryContext);
   const form = useFormContext();
 
-  useMemo(() => {
+  useEffect(() => {
     register?.(name, config, setState);
-  }, [config, name, register]);
+    return () => {
+      unregister?.(name);
+    };
+  }, [name, config, register, setState, unregister]);
 
   const Component = useCallback(
     (field: { value: unknown; onChange: (value: unknown) => void }) => {
@@ -118,20 +127,24 @@ export function FormItemComponent<TFieldValues extends FieldValues>({
     ]
   );
   return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className={cn("space-y-2 sm:space-y-3", "")}>
-          <FormLabel className={cn("text-sm sm:text-base", "")}>
-            {label}
-          </FormLabel>
-          <FormControl>
-            <Component {...field} />
-          </FormControl>
-          <FormMessage className={cn("text-xs sm:text-sm", "")} />
-        </FormItem>
+    <>
+      {state.visible !== false && (
+        <FormField
+          control={control}
+          name={name}
+          render={({ field }) => (
+            <FormItem className={cn("space-y-2 sm:space-y-3", "")}>
+              <FormLabel className={cn("text-sm sm:text-base", "")}>
+                {label}
+              </FormLabel>
+              <FormControl>
+                <Component {...field} />
+              </FormControl>
+              <FormMessage className={cn("text-xs sm:text-sm", "")} />
+            </FormItem>
+          )}
+        />
       )}
-    />
+    </>
   );
 }
