@@ -37,6 +37,7 @@ export type FormConfig = {
   label?: string;
   settings?: FormSettings;
   fields?: FormFieldConfig[];
+  initialValues?: DefaultValues<FieldValues>;
 };
 
 export type FormFieldConfig = {
@@ -70,7 +71,6 @@ export type FormProps<T extends FieldValues> = {
   formConfig: FormConfig;
   onSubmit?: SubmitHandler<T>;
   adapter?: Record<string, React.ComponentType<Record<string, unknown>>>;
-  initialValues?: DefaultValues<T>;
   onChange?: (fieldName: string, value: unknown, allValues: T) => void;
   registerOnChangeRecord?: (fieldConfig: FormFieldConfig) => void;
 };

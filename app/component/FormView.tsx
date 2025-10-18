@@ -20,8 +20,13 @@ export function FormView({ config }: { config: FormConfig }) {
     console.log("All form values:", allValues);
   };
 
+  if (!config) {
+    return null;
+  }
+
   return (
     <FormBuilder
+      key={JSON.stringify(config)}
       adapter={{
         SPECIAL_INPUT: (props) => {
           return <SpecialTextFormField {...props} />;

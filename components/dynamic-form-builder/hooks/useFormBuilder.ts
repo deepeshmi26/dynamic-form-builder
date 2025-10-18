@@ -4,6 +4,7 @@ import { mergeDeep } from "@/lib/utils";
 import { debounce } from "lodash";
 import { useCallback, useMemo, useRef } from "react";
 import {
+  DefaultValues,
   FieldPath,
   FieldValues,
   Path,
@@ -25,12 +26,11 @@ export function useFormBuilder<T extends FieldValues>({
   formConfig,
   onSubmit,
   adapter,
-  initialValues,
   onChange,
 }: FormProps<T>) {
   const fields = formConfig.fields;
   const form = useForm<T>({
-    defaultValues: initialValues,
+    defaultValues: formConfig.initialValues as DefaultValues<T>,
     mode: "onChange",
     resolver: Validator.customAjvResolver(Validator.generateSchema(fields || [])) as Resolver<T>,
   });

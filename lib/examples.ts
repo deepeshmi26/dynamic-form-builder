@@ -4,6 +4,11 @@ export const FORM_EXAMPLES = {
     settings: {
      
     },
+    initialValues: {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      favoriteFood: "pizza",
+    },
     fields: [
       {
         name: "dob",
@@ -108,6 +113,12 @@ export const FORM_EXAMPLES = {
         label: "text-gray-700 font-medium",
         field: "bg-white border border-gray-300 rounded-md",
       },
+    },
+    initialValues: {
+      name: "Jane Smith",
+      email: "jane.smith@example.com",
+      favoriteFood: "salad",
+      message: "Hello, I'm interested in learning more about your services.",
     },
     fields: [
       {
