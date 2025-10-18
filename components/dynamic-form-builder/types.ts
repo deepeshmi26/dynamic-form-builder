@@ -85,7 +85,8 @@ export type ChangeRule<T extends FieldValues> = {
   if: object;
   then: Record<string, Partial<FormFieldConfig>>;
   else: Record<string, Partial<FormFieldConfig>>;
-  target: Path<T>;
+  parentPath?: Path<T>;
+  
 };
 
 export type FormRegistryContext<T extends FieldValues> = {

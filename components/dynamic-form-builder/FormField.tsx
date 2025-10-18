@@ -23,6 +23,7 @@ import {
   FormOption,
   FormSettings,
 } from "./types";
+import { getFullFieldNameWithPath } from "./utils";
 const ArrayFormField = dynamic(
   () => import("./fields/ArrayFormField").then((m) => m.ArrayFormField),
   { ssr: false }
@@ -69,11 +70,12 @@ type Props<T extends FieldValues> = {
 export function FormField<T extends FieldValues>({
   settings,
   control,
-  field: config,
+  field,
   path,
 }: Props<T> & { path?: string }) {
-  const [state, setState] = useState<FieldValues[keyof FieldValues]>(config);
-  const name = config.name;
+  const [state, setState] = useState<FieldValues[keyof FieldValues]>(field);
+  const fieldName = field.name;
+  const fullFieldNameWithPath = getFullFieldNameWithPath(fieldName, path);
   const label = state.label;
   const layout = settings?.layout || "vertical";
 
@@ -85,8 +87,8 @@ export function FormField<T extends FieldValues>({
   };
 
   useEffect(() => {
-    setState(config);
-  }, [config]);
+    setState(field);
+  }, [field]);
 
   const {
     register,
@@ -97,11 +99,11 @@ export function FormField<T extends FieldValues>({
   const form = useFormContext();
 
   useEffect(() => {
-    register?.(name, config, setState);
+    register?.(fullFieldNameWithPath, field, setState);
     return () => {
-      unregister?.(name);
+      unregister?.(fullFieldNameWithPath);
     };
-  }, [name, config, register, setState, unregister]);
+  }, [fieldName, field, register, setState, unregister, fullFieldNameWithPath]);
 
   const Component = useCallback(
     (field: { value: unknown; onChange: (value: unknown) => void }) => {
@@ -109,7 +111,7 @@ export function FormField<T extends FieldValues>({
         field.onChange(value);
         if (onChange) {
           const allValues = form.getValues();
-          onChange(name, value, allValues);
+          onChange(fullFieldNameWithPath, value, allValues);
         }
       };
       const placeholder = typeof label === 'string' ? `Enter ${label}` : (typeof state.alternateLabel === 'string' ? `Enter ${state.alternateLabel}` : undefined);
@@ -177,9 +179,8 @@ export function FormField<T extends FieldValues>({
           return (
             <ArrayFormField
               {...state}
-              name={name}
+              fullFieldNameWithPath={fullFieldNameWithPath}
               structure={state.structure}
-              path={path ?? ""}
             />
           );
         case FormItemType.CHECKBOX:
@@ -197,14 +198,14 @@ export function FormField<T extends FieldValues>({
           return null;
       }
     },
-    [label, state, adapter, onChange, form, name, path]
+    [label, state, adapter, onChange, form, fieldName, fullFieldNameWithPath]
   );
   return (
     <>
       {state.visible !== false && (
         <RHFFormField<T, FieldPath<T>>
           control={control}
-          name={name}
+          name={fullFieldNameWithPath}
           render={({
             field,
           }: {

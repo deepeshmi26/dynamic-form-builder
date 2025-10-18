@@ -95,15 +95,6 @@ export class AjvValidator {
     };
   }
 
-  validate(schema: object, data: unknown) {
-    const validate = this.ajv.compile(schema);
-    const isValid = validate(data);
-    return {
-      isValid,
-      errors: !isValid ? validate.errors : undefined,
-    };
-  }
-
   private ajvToRHFErrors<T extends FieldValues>(
     ajvErrors: ErrorObject[] | null | undefined
   ): FieldErrors<T> {

@@ -103,7 +103,7 @@ export const FORM_EXAMPLES = {
       {
         name: "socialHandles",
         label: "Social media handles",
-        renderComponent: "ARRAY_INLINE",
+        // renderComponent: "ARRAY_INLINE",
         type: "ARRAY",
         structure: [
           {
@@ -116,6 +116,20 @@ export const FORM_EXAMPLES = {
               { value: "instagram", label: "Instagram" },
             ],
             required: true,
+            onConditionMatch: [
+              {
+                if: {
+                  properties: {
+                    platform: { const: "linkedin" },
+                  },
+                },
+                then: {
+                  url: {
+                    required: true,
+                  },
+                },
+              },
+            ],
           },
           {
             name: "url",

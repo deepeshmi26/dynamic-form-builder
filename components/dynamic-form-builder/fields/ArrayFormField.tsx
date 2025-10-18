@@ -3,17 +3,15 @@ import { FormField } from "../FormField";
 import { FormFieldConfig } from "../types";
 
 type Props = {
-  name: string;
   structure: FormFieldConfig[];
-  path: string;
+  fullFieldNameWithPath: string;
 };
 
-export function ArrayFormField({ name, structure, path }: Props) {
+export function ArrayFormField({ structure, fullFieldNameWithPath }: Props) {
   const { control } = useFormContext();
-  name = path.length > 0 ? `${path}.${name}` : name;
   const { fields, append, remove } = useFieldArray({
     control,
-    name: name,
+    name: fullFieldNameWithPath,
   });
 
   return (
@@ -23,11 +21,11 @@ export function ArrayFormField({ name, structure, path }: Props) {
           <div>Item {index + 1}</div>
           {structure.map((item) => (
             <FormField
-              key={`${name}.${index}.${item.name}`}
+              key={`${index}.${item.name}`}
               settings={{}}
               control={control}
-              field={{ ...item, name: `${name}.${index}.${item.name}` }}
-              path={`${name}.${index}`}
+              field={{ ...item, name: `${index}.${item.name}` }}
+              path={fullFieldNameWithPath}
             />
           ))}
           <button type="button" onClick={() => remove(index)}>
