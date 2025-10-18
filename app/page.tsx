@@ -29,21 +29,26 @@ export default function Home() {
             side="left"
             className="w-[90%] bg-black p-6 h-full max-h-screen"
           >
-            <h1 className="text-3xl font-bold text-white mb-6">JSON Editor</h1>
-            <JsonEditor
-              onValidJson={(json) => {
-                handleValidJson(json as FormConfig);
-                setOpen(false);
-              }}
-              formSamples={FORM_EXAMPLES}
-            />
+            <div className="h-full flex flex-col">
+              <div className="h-10">
+                <h1 className="text-3xl font-bold text-white mb-6">JSON Editor</h1>
+              </div>
+              <div className="flex-1">
+              <JsonEditor
+                onValidJson={(json) => {
+                  handleValidJson(json as FormConfig);
+                  setOpen(false);
+                }}
+                formSamples={FORM_EXAMPLES}
+              />
+              </div>
+            </div>
           </SheetContent>
         </Sheet>
       </div>
 
       {/* JSON Editor - Hidden on mobile, visible on desktop */}
       <div className="hidden lg:flex flex-col lg:w-1/2 bg-black p-6 overflow-hidden h-full max-h-screen">
-  
           <h1 className="text-3xl font-bold text-white">JSON Editor</h1>
           <JsonEditor
             onValidJson={handleValidJson}
