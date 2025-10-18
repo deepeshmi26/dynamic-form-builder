@@ -111,7 +111,7 @@ export function useFormBuilder<T extends FieldValues>({
 
   // Run conditional field dependencies by validating the conditions in the onChangeRecord
   // and applying the changes to the target fields.
-  const runOnChangeConditions = useCallback(
+  const evaluateConditionsAndUpdate = useCallback(
     (fieldName: string, allValues: unknown) => {
       if (!onChangeRecord.current || !onChangeRecord.current[fieldName]) return;
 
@@ -166,17 +166,17 @@ export function useFormBuilder<T extends FieldValues>({
   );
 
   
-  const debouncedRunOnChangeConditions = useMemo(() => {
-    return debounce(runOnChangeConditions, 300); // Debounce condition evaluation to prevent excessive updates
-  }, [runOnChangeConditions]);
+  const debouncedEvaluateConditionsAndUpdate = useMemo(() => {
+    return debounce(evaluateConditionsAndUpdate, 300); // Debounce condition evaluation to prevent excessive updates
+  }, [evaluateConditionsAndUpdate]);
 
   const handleGlobalChange = useCallback(
     (fieldName: string, value: unknown) => {
       const allValues = form.getValues();
       if (onChange) onChange(fieldName, value, allValues);
-      debouncedRunOnChangeConditions(fieldName, allValues);
+      debouncedEvaluateConditionsAndUpdate(fieldName, allValues);
     },
-    [onChange, form, debouncedRunOnChangeConditions]
+    [onChange, form, debouncedEvaluateConditionsAndUpdate]
   );
 
   return {
