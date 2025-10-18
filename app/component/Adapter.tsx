@@ -6,17 +6,18 @@ import React from "react";
 import { Plus, Trash2 } from "lucide-react";
 
 type Props = {
-  name: string;
   structure: FormFieldConfig[];
-  path: string;
+  fullFieldNameWithPath: string;
 };
 
-export function ArrayInlineAdapter({ name, structure, path }: Props) {
+export function ArrayInlineAdapter({
+  fullFieldNameWithPath,
+  structure,
+}: Props) {
   const { control } = useFormContext();
-  name = path.length > 0 ? `${path}.${name}` : name;
   const { fields, append, remove } = useFieldArray({
     control,
-    name: name,
+    name: fullFieldNameWithPath,
   });
 
   return (
@@ -25,12 +26,15 @@ export function ArrayInlineAdapter({ name, structure, path }: Props) {
         <div key={field.id} className="flex items-center gap-4">
           <div className="flex-1 flex items-center gap-4">
             {structure.map((item) => (
-              <div key={`${name}.${index}.${item.name}`}>
+              <div key={`${index}.${item.name}`}>
                 <FormField
                   settings={{}}
                   control={control}
-                  field={{ ...item, name: `${name}.${index}.${item.name}` }}
-                  path={`${name}.${index}`}
+                  field={{
+                    ...item,
+                    name: `${fullFieldNameWithPath}.${index}.${item.name}`,
+                  }}
+                  path={fullFieldNameWithPath}
                 />
               </div>
             ))}

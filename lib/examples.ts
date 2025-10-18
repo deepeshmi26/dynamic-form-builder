@@ -103,7 +103,7 @@ export const FORM_EXAMPLES = {
       {
         name: "socialHandles",
         label: "Social media handles",
-        // renderComponent: "ARRAY_INLINE",
+        renderComponent: "ARRAY_INLINE",
         type: "ARRAY",
         structure: [
           {
