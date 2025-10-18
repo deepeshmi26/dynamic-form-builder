@@ -20,7 +20,7 @@ export function ArrayFormField({ structure, fullFieldNameWithPath }: Props) {
     <div className="flex flex-col gap-4">
       {fields.map((field, index) => (
         <div key={field.id} className="flex items-center gap-4">
-          <div className="flex-1 flex items-center gap-4">
+          <div className="flex-1 flex items-start gap-4">
             {structure.map((item) => (
                 <FormField
                   key={`${index}.${item.name}`}

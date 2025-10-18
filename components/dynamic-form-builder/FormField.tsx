@@ -215,14 +215,14 @@ export function FormField<T extends FieldValues>({
               className={cn(
                 "space-y-2",
                 layout === "horizontal" &&
-                  "grid grid-cols-1 sm:grid-cols-3 sm:items-center sm:space-y-0 sm:gap-4",
+                  "grid grid-cols-1 sm:grid-cols-3 sm:items-center sm:space-y-0 gap-1",
                 mergedClassNames.body
               )}
             >
               <FormLabel
                 required={state.required}
                 className={cn(
-                  "text-sm sm:text-base font-medium",
+                  "text-sm sm:text-base font-medium !mb-0",
                   layout === "horizontal" && "sm:text-right",
                   mergedClassNames.label
                 )}

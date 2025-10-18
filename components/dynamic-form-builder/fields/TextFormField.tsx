@@ -14,7 +14,7 @@ export const TextFormField = ({ value, onChange, placeholder }: Props) => {
       value={value || ""}
       onChange={(e) => onChange?.(e.target.value)}
       placeholder={placeholder}
-      className="text-sm sm:text-base"
+      className="!mb-0 !text-base placeholder:text-muted-foreground"
     />
   );
 };
