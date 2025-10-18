@@ -5,10 +5,14 @@ import { FormConfig } from "@/components/dynamic-form-builder/types";
 import { Button } from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
 import { SpecialTextFormField } from "./Adapter";
+import { toast } from "sonner";
 
 export function FormView({ config }: { config: FormConfig }) {
   const handleSubmit = (values: FieldValues) => {
-    console.log(values);
+    toast.success("Form submitted successfully!", {
+      description: JSON.stringify(values, null, 2),
+      position: "top-right",
+    });
   };
 
   const onChange = (
