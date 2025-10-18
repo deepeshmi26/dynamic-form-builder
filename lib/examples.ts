@@ -24,7 +24,7 @@ export const FORM_EXAMPLES = {
         placeholder: "Enter your full name",
         required: true,
         validator: {
-          minLength: 12,
+          minLength: 2,
           maxLength: 50,
         },
       },
@@ -101,7 +101,7 @@ export const FORM_EXAMPLES = {
           label: "text-green-700 font-bold",
         },
         validator: {
-          minLength: 12,
+          minLength: 2,
           maxLength: 50,
         },
       },
@@ -213,7 +213,7 @@ export const FORM_EXAMPLES = {
         placeholder: "Enter your full name",
         required: true,
         validator: {
-          minLength: 12,
+          minLength: 2,
           maxLength: 50,
         },
       },
@@ -263,7 +263,7 @@ export const FORM_EXAMPLES = {
         placeholder: "Enter your full name",
         required: true,
         validator: {
-          minLength: 12,
+          minLength: 2,
           maxLength: 50,
         },
       },
@@ -390,7 +390,7 @@ export const FORM_EXAMPLES = {
         placeholder: "Enter your full name",
         required: true,
         validator: {
-          minLength: 12,
+          minLength: 2,
           maxLength: 50,
         },
       },
