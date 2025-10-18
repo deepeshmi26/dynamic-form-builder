@@ -149,8 +149,13 @@ export class AjvValidator {
 
       if (!path) continue;
 
-      const message =
-        this.labelMapping[instancePath] + " " + err.message || "Invalid value";
+      let message = "";
+      if (err.keyword === "required") {
+        message = `${this.labelMapping[instancePath]} is required`;
+      } else {
+        message = this.labelMapping[instancePath] + " " + err.message || "Invalid value";
+      }
+
       const errorObj = {
         type: err.keyword,
         message: message,
