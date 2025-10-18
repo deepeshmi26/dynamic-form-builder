@@ -97,8 +97,8 @@ export type FormRegistryContext<T extends FieldValues> = {
   ) => void;
   unregister?: (name: string) => void;
   registry?: Record<string, RegistryEntry<T>>;
-  onChangeRecord?: Record<string, ChangeRule<T>[]>;
-  registerOnChangeRecord?: (fieldConfig: FormFieldConfig) => void;
+  onChangeRegistry?: Record<string, ChangeRule<T>[]>;
+  registerOnChangeUpdates?: (fieldConfig: FormFieldConfig) => void;
   updateState?: (newConfig: FormFieldConfig & { name: string }) => void;
   adapter?: Record<string, React.ComponentType<Record<string, unknown>>>;
   onChange?: (fieldName: string, value: unknown, allValues: T) => void;

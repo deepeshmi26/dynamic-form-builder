@@ -37,7 +37,7 @@ export function useFormBuilder<T extends FieldValues>({
   });
 
   const registry = useRef<FormRegistryContext<T>["registry"]>({});
-  const onChangeRegistry = useRef<FormRegistryContext<T>["onChangeRecord"]>({});
+  const onChangeRegistry = useRef<FormRegistryContext<T>["onChangeRegistry"]>({});
   const registrationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleSubmit: SubmitHandler<T> = (values) => {
@@ -271,7 +271,7 @@ export function useFormBuilder<T extends FieldValues>({
       unregister,
       updateState,
       onChange: handleGlobalChange,
-      onChangeRecord: onChangeRegistry.current,
+      onChangeRegistry: onChangeRegistry.current,
     },
   } as const;
 }
