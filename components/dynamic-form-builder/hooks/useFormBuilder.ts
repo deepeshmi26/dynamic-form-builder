@@ -82,87 +82,87 @@ export function useFormBuilder<T extends FieldValues>({
     [onChangeRegistry]
   );
 
-  const collectDependentFields = useCallback((rules: ChangeRule<T>[]) => {
-    const dependentFields = new Set<string>();
-    rules.forEach((rule) => {
-      Object.keys(rule.then).forEach((key) => {
-        const targetField = getFullFieldNameWithPath(key, rule.parentPath);
-        dependentFields.add(targetField);
-      });
-      
-      if (rule.else) {
-        Object.keys(rule.else).forEach((key) => {
-          const targetField = getFullFieldNameWithPath(key, rule.parentPath);
-          dependentFields.add(targetField);
-        });
-      }
-    });
-    return dependentFields;
-  }, []);
-
-  const applyFieldChanges = useCallback((collectedChange: Record<string, Partial<FormFieldConfig>>) => {
-    Object.keys(collectedChange).forEach((targetFieldName) => {
-      const target = registry.current?.[targetFieldName];
-      if (!target) return;
-      const initialState = target.initialState ?? ({} as Partial<FormFieldConfig>);
-      const mergedConfig = mergeDeep(
-        {} as Partial<FormFieldConfig>,
-        initialState as Record<string, unknown>,
-        collectedChange[targetFieldName] as Record<string, unknown>
-      );
-      registry.current![targetFieldName].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
-      target.setState(mergedConfig);
-    });
-  }, []);
-
-  const resetFieldsToInitialState = useCallback((fieldsToReset: Set<string>) => {
-    fieldsToReset.forEach((field) => {
-      const target = registry.current?.[field];
-      if (!target) return;
-      const initialState = target.initialState ?? ({} as Partial<FormFieldConfig>);
-      const mergedConfig = mergeDeep(
-        {} as Partial<FormFieldConfig>,
-        initialState as Record<string, unknown>
-      );
-      registry.current![field].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
-      target.setState(mergedConfig);
-    });
-  }, []);
-
   const evaluateConditionsAndUpdate = useCallback(
     (fieldName: string, allValues: unknown) => {
-      function replaceUndefined(obj) {
+      function replaceUndefined(obj: unknown) {
         return JSON.parse(
           JSON.stringify(obj, (_, v) => (v === undefined ? null : v))
         );
       }
       
-       allValues = replaceUndefined(allValues);
+      function collectDependentFields(rules: ChangeRule<T>[]) {
+        const dependentFields = new Set<string>();
+        rules.forEach((rule) => {
+          Object.keys(rule.then).forEach((key) => {
+            const targetField = getFullFieldNameWithPath(key, rule.parentPath);
+            dependentFields.add(targetField);
+          });
+          
+          if (rule.else) {
+            Object.keys(rule.else).forEach((key) => {
+              const targetField = getFullFieldNameWithPath(key, rule.parentPath);
+              dependentFields.add(targetField);
+            });
+          }
+        });
+        return dependentFields;
+      }
+
+      function applyFieldChanges(accumlatedChanges: Record<string, Partial<FormFieldConfig>>) {
+        Object.keys(accumlatedChanges).forEach((targetFieldName) => {
+          const target = registry.current?.[targetFieldName];
+          if (!target) return;
+          const initialState = target.initialState ?? ({} as Partial<FormFieldConfig>);
+          const mergedConfig = mergeDeep(
+            {} as Partial<FormFieldConfig>,
+            initialState as Record<string, unknown>,
+            accumlatedChanges[targetFieldName] as Record<string, unknown>
+          );
+          registry.current![targetFieldName].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
+          target.setState(mergedConfig);
+        });
+      }
+
+      function resetFieldsToInitialState(fieldsToReset: Set<string>) {
+        fieldsToReset.forEach((field) => {
+          const target = registry.current?.[field];
+          if (!target) return;
+          const initialState = target.initialState ?? ({} as Partial<FormFieldConfig>);
+          const mergedConfig = mergeDeep(
+            {} as Partial<FormFieldConfig>,
+            initialState as Record<string, unknown>
+          );
+          registry.current![field].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
+          target.setState(mergedConfig);
+        });
+      }
+      
+      allValues = replaceUndefined(allValues);
       if (!onChangeRegistry.current || !onChangeRegistry.current[fieldName]) return;
 
       const rules = onChangeRegistry.current[fieldName];
-      const collectedChange: Record<string, Partial<FormFieldConfig>> = {};
-      const dependentFields = collectDependentFields(rules);
-      const fieldsWhichWereUpdated = new Set<string>();
+      const accumlatedChanges: Record<string, Partial<FormFieldConfig>> = {};
+      const allDependentFields = collectDependentFields(rules);
+      const updatedFields = new Set<string>();
 
       rules.forEach((rule: ChangeRule<T>) => {
         const { isValid } = validateAjv(rule.if, allValues);
         if (isValid) {
           Object.keys(rule.then).forEach((key) => {
-            fieldsWhichWereUpdated.add(key);
+            updatedFields.add(key);
             const targetFieldNameWithPath = getFullFieldNameWithPath(key, rule.parentPath);
-            collectedChange[targetFieldNameWithPath] = mergeDeep(
-              collectedChange[targetFieldNameWithPath] as Record<string, unknown>,
+            accumlatedChanges[targetFieldNameWithPath] = mergeDeep(
+              accumlatedChanges[targetFieldNameWithPath] as Record<string, unknown>,
               rule.then[key] as Record<string, unknown>
             );
           });
         } else {
           if (Object.keys(rule.else || {}).length > 0) {
             Object.keys(rule.else).forEach((key) => {
-              fieldsWhichWereUpdated.add(key);
+              updatedFields.add(key);
               const targetFieldNameWithPath = getFullFieldNameWithPath(key, rule.parentPath);
-              collectedChange[targetFieldNameWithPath] = mergeDeep(
-                collectedChange[key] as Record<string, unknown>,
+              accumlatedChanges[targetFieldNameWithPath] = mergeDeep(
+                accumlatedChanges[key] as Record<string, unknown>,
                 rule.else[key] as Record<string, unknown>
               );
             });
@@ -171,16 +171,16 @@ export function useFormBuilder<T extends FieldValues>({
       });
 
       const fieldsToReset = new Set<string>();
-      dependentFields.forEach((field) => {
-        if (!fieldsWhichWereUpdated.has(field)) {
+      allDependentFields.forEach((field) => {
+        if (!updatedFields.has(field)) {
           fieldsToReset.add(field);
         }
       });
 
       resetFieldsToInitialState(fieldsToReset);
-      applyFieldChanges(collectedChange);
+      applyFieldChanges(accumlatedChanges);
     },
-    [collectDependentFields, resetFieldsToInitialState, applyFieldChanges]
+    []
   );
 
   const unregister = useCallback(
@@ -192,24 +192,24 @@ export function useFormBuilder<T extends FieldValues>({
     [registry, onChangeRegistry]
   );
 
-  const scheduleEvaluationAfterRegistration = useCallback(() => {
-    if (registrationTimeoutRef.current) {
-      clearTimeout(registrationTimeoutRef.current);
-    }
-    registrationTimeoutRef.current = setTimeout(() => {
-      const allValues = form.getValues();
-      Object.keys(onChangeRegistry.current || {}).forEach((fieldName) => {
-        evaluateConditionsAndUpdate(fieldName, allValues);
-      });
-    }, 50);
-  }, [form, evaluateConditionsAndUpdate]);
-
   const register = useCallback(
     (
       fullFieldNameWithPath: string,
       fieldConfig: FormFieldConfig,
       setStateCall: (state: T[keyof T]) => void
     ) => {
+      function scheduleEvaluationAfterRegistration() {
+        if (registrationTimeoutRef.current) {
+          clearTimeout(registrationTimeoutRef.current);
+        }
+        registrationTimeoutRef.current = setTimeout(() => {
+          const allValues = form.getValues();
+          Object.keys(onChangeRegistry.current || {}).forEach((fieldName) => {
+            evaluateConditionsAndUpdate(fieldName, allValues);
+          });
+        }, 50);
+      }
+
       if (!registry.current) return;
       registerOnChangeUpdates(fullFieldNameWithPath, fieldConfig);
       registry.current[fullFieldNameWithPath as string] = {
@@ -220,15 +220,8 @@ export function useFormBuilder<T extends FieldValues>({
 
       scheduleEvaluationAfterRegistration();
     },
-    [registerOnChangeUpdates, scheduleEvaluationAfterRegistration]
+    [registerOnChangeUpdates, form, evaluateConditionsAndUpdate]
   );
-
-  const evaluateAllFields = useCallback(() => {
-    const allValues = form.getValues();
-    Object.keys(onChangeRegistry.current || {}).forEach((fieldName) => {
-      evaluateConditionsAndUpdate(fieldName, allValues);
-    });
-  }, [form, evaluateConditionsAndUpdate]);
 
   const debouncedEvaluateConditionsAndUpdate = useMemo(() => {
     return debounce(evaluateConditionsAndUpdate, 300);
@@ -244,6 +237,13 @@ export function useFormBuilder<T extends FieldValues>({
   );
 
   useEffect(() => {
+    function evaluateAllFields() {
+      const allValues = form.getValues();
+      Object.keys(onChangeRegistry.current || {}).forEach((fieldName) => {
+        evaluateConditionsAndUpdate(fieldName, allValues);
+      });
+    }
+
     const timeoutId = setTimeout(() => {
       if (fields && fields.length > 0 && registry.current && Object.keys(registry.current).length > 0) {
         evaluateAllFields();
@@ -251,7 +251,7 @@ export function useFormBuilder<T extends FieldValues>({
     }, 200);
 
     return () => clearTimeout(timeoutId);
-  }, [fields, evaluateAllFields]);
+  }, [fields, form, evaluateConditionsAndUpdate]);
 
   useEffect(() => {
     return () => {
