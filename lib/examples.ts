@@ -485,6 +485,81 @@ export const FORM_EXAMPLES = {
       },
     ],
   },
+  linkedSelects: {
+    label: "Linked Select Fields Example",
+    fields: [
+      {
+        name: "carBrand",
+        label: "Car Brand",
+        type: "SELECT", 
+        placeholder: "Select car brand",
+        required: true,
+        options: [
+          { value: "toyota", label: "Toyota" },
+          { value: "honda", label: "Honda" },
+          { value: "ford", label: "Ford" }
+        ],
+        onConditionMatch: [
+          {
+            if: {
+              properties: {
+                carBrand: { const: "toyota" }
+              }
+            },
+            then: {
+              carModel: {
+                options: [
+                  { value: "camry", label: "Camry" },
+                  { value: "corolla", label: "Corolla" },
+                  { value: "rav4", label: "RAV4" }
+                ]
+              }
+            }
+          },
+          {
+            if: {
+              properties: {
+                carBrand: { const: "honda" }
+              }
+            },
+            then: {
+              carModel: {
+                options: [
+                  { value: "civic", label: "Civic" },
+                  { value: "accord", label: "Accord" },
+                  { value: "crv", label: "CR-V" }
+                ]
+              }
+            }
+          },
+          {
+            if: {
+              properties: {
+                carBrand: { const: "ford" }
+              }
+            },
+            then: {
+              carModel: {
+                options: [
+                  { value: "mustang", label: "Mustang" },
+                  { value: "f150", label: "F-150" },
+                  { value: "explorer", label: "Explorer" }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        name: "carModel",
+        label: "Car Model",
+        type: "SELECT",
+        placeholder: "Select car model",
+        required: true,
+        options: [] // Initially empty, populated based on car brand selection
+      }
+    ]
+  },
 
   
 } as const;

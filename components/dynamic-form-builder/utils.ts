@@ -7,10 +7,11 @@ export function getFullFieldNameWithPath(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function buildAjvSchemaFromPath(path: string, validator: any) {
-  const segments = path.split(".");
+export function buildAjvSchemaFromPath(path: string, validator: object) {
+  const segments = path ? path.split(".") : [];
   let schema = validator;
 
+  // Walk backward up the path
   for (let i = segments.length - 1; i >= 0; i--) {
     const segment = segments[i];
     const isArrayIndex = /^\d+$/.test(segment);
@@ -21,28 +22,23 @@ export function buildAjvSchemaFromPath(path: string, validator: any) {
         items: schema,
       };
     } else {
-      // Only wrap if validator doesn't already have `properties[segment]`
-      const alreadyHasProperties =
-        schema.type === "object" &&
-        schema.properties &&
-        schema.properties[segment];
+      schema = {
+        type: "object",
+        properties: {
+          [segment]: schema,
+        },
+      };
+    }
+  }
 
-      if (alreadyHasProperties) {
-        // No need to wrap again — just continue upward
-        schema = {
-          type: "object",
-          properties: {
-            [segment]: schema.properties[segment],
-          },
-        };
-      } else {
-        schema = {
-          type: "object",
-          properties: {
-            [segment]: schema,
-          },
-        };
-      }
+  // ✅ If path is empty, just ensure top-level object typing if missing
+  if (segments.length === 0) {
+    // Add `type: "object"` if not explicitly specified
+    if (!schema.type) {
+      schema = {
+        type: "object",
+        ...schema,
+      };
     }
   }
 

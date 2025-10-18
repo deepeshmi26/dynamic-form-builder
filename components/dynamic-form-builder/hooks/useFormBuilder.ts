@@ -118,35 +118,65 @@ export function useFormBuilder<T extends FieldValues>({
       // Accumulates field changes for each rule
       const collectedChange: Record<string, Partial<FormFieldConfig>> = {}; 
 
+      const dependentFields = new Set<string>();
+      onChangeRecord.current[fieldName].forEach((rule: ChangeRule<T>) => {
+        Object.keys(rule.then).forEach((key) => {
+          const targetField = getFullFieldNameWithPath(key, rule.parentPath);
+          dependentFields.add(targetField);
+        });
+        
+        if (rule.else) {
+          Object.keys(rule.else).forEach((key) => {
+            const targetField = getFullFieldNameWithPath(key, rule.parentPath);
+            dependentFields.add(targetField);
+          });
+        }
+      });
+
+      const fieldsWhichWereUpdated = new Set<string>();
       onChangeRecord.current[fieldName].forEach((rule: ChangeRule<T>) => {
         const { isValid } = validateAjv(rule.if, allValues);
         if (isValid) {
           Object.keys(rule.then).forEach((key) => {
+            fieldsWhichWereUpdated.add(key);
             const targetFieldNameWithPath = getFullFieldNameWithPath(key, rule.parentPath);
             collectedChange[targetFieldNameWithPath] = mergeDeep(
               collectedChange[targetFieldNameWithPath] as Record<string, unknown>,
               rule.then[key] as Record<string, unknown>
             );
           });
-        } else {
+        } 
+        else {
           if (Object.keys(rule.else || {}).length > 0) {
             Object.keys(rule.else).forEach((key) => {
+              fieldsWhichWereUpdated.add(key);
               const targetFieldNameWithPath = getFullFieldNameWithPath(key, rule.parentPath);
               collectedChange[targetFieldNameWithPath] = mergeDeep(
                 collectedChange[key] as Record<string, unknown>,
                 rule.else[key] as Record<string, unknown>
               );
             });
-          } else {
-            Object.keys(rule.then).forEach((key) => {
-              const targetFieldNameWithPath = getFullFieldNameWithPath(key, rule.parentPath);
-              const target = registry.current?.[targetFieldNameWithPath];
-              if (target?.initialConfig) {
-                collectedChange[targetFieldNameWithPath] = target.initialConfig; // Reset to initial config if no else condition
-              }
-            });
-          }
+          } 
         }
+      });
+
+      const fieldsToReset = new Set<string>();
+      dependentFields.forEach((field) => {
+        if (!fieldsWhichWereUpdated.has(field)) {
+          fieldsToReset.add(field);
+        }
+      });
+      
+      fieldsToReset.forEach((field) => {
+        const target = registry.current?.[field];
+        if (!target) return;
+        const initialConfig = target.initialConfig ?? ({} as Partial<FormFieldConfig>);
+        const mergedConfig = mergeDeep(
+          {} as Partial<FormFieldConfig>,
+          initialConfig as Record<string, unknown>
+        );
+        registry.current![field].config = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
+        target.setState(mergedConfig); // Apply merged configuration to target field
       });
 
       Object.keys(collectedChange).forEach((targetFieldName) => {
