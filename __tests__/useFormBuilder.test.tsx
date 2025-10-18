@@ -497,4 +497,171 @@ describe("useFormBuilder Hook", () => {
       );
     });
   });
+
+  describe("Initial Field Evaluation", () => {
+    let TestRegistryComponent: any;
+    let mockSetState: any;
+
+    beforeEach(() => {
+      mockSetState = jest.fn();
+
+      TestRegistryComponent = ({ formConfig, onMount }: any) => {
+        const { contextValue } = useFormBuilder({ formConfig });
+
+        React.useEffect(() => {
+          if (onMount) onMount(contextValue);
+        }, [contextValue, onMount]);
+
+        return <div data-testid="registry-component">Registry Component</div>;
+      };
+    });
+
+    it("should run initial evaluation when fields are registered", async () => {
+      const mockOnMount = jest.fn();
+
+      const formConfigWithConditions = {
+        fields: [
+          {
+            name: "triggerField",
+            label: "Trigger Field",
+            type: "TEXT",
+            required: true,
+          },
+          {
+            name: "dependentField",
+            label: "Dependent Field",
+            type: "TEXT",
+            visible: false,
+            onConditionMatch: [
+              {
+                if: {
+                  properties: {
+                    triggerField: { const: "show" },
+                  },
+                },
+                then: {
+                  dependentField: {
+                    visible: true,
+                    required: true,
+                  },
+                },
+              },
+            ],
+          },
+        ],
+        initialValues: {
+          triggerField: "show",
+        },
+      };
+
+      render(
+        <TestRegistryComponent
+          formConfig={formConfigWithConditions}
+          onMount={mockOnMount}
+        />
+      );
+
+      const contextValue = mockOnMount.mock.calls[0][0];
+
+      // Register the trigger field
+      contextValue.register(
+        "triggerField",
+        formConfigWithConditions.fields[0],
+        mockSetState
+      );
+
+      // Register the dependent field
+      contextValue.register(
+        "dependentField",
+        formConfigWithConditions.fields[1],
+        mockSetState
+      );
+
+      // Wait for initial evaluation to run
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Verify that the dependent field was updated based on initial values
+      expect(mockSetState).toHaveBeenCalledWith(
+        expect.objectContaining({
+          visible: true,
+          required: true,
+        })
+      );
+    });
+
+    it("should run evaluation after multiple fields are registered", async () => {
+      const mockOnMount = jest.fn();
+      const mockSetState1 = jest.fn();
+      const mockSetState2 = jest.fn();
+
+      const formConfigWithConditions = {
+        fields: [
+          {
+            name: "field1",
+            label: "Field 1",
+            type: "TEXT",
+            required: true,
+          },
+          {
+            name: "field2",
+            label: "Field 2",
+            type: "TEXT",
+            visible: false,
+            onConditionMatch: [
+              {
+                if: {
+                  properties: {
+                    field1: { const: "show" },
+                  },
+                },
+                then: {
+                  field2: {
+                    visible: true,
+                  },
+                },
+              },
+            ],
+          },
+        ],
+        initialValues: {
+          field1: "show",
+        },
+      };
+
+      render(
+        <TestRegistryComponent
+          formConfig={formConfigWithConditions}
+          onMount={mockOnMount}
+        />
+      );
+
+      const contextValue = mockOnMount.mock.calls[0][0];
+
+      // Register fields with a small delay between them
+      contextValue.register(
+        "field1",
+        formConfigWithConditions.fields[0],
+        mockSetState1
+      );
+
+      // Small delay to simulate multiple registrations
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      contextValue.register(
+        "field2",
+        formConfigWithConditions.fields[1],
+        mockSetState2
+      );
+
+      // Wait for the debounced evaluation after registration stops
+      await new Promise((resolve) => setTimeout(resolve, 200));
+
+      // Verify that field2 was updated based on field1's initial value
+      expect(mockSetState2).toHaveBeenCalledWith(
+        expect.objectContaining({
+          visible: true,
+        })
+      );
+    });
+  });
 });

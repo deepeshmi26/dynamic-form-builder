@@ -498,6 +498,9 @@ export const FORM_EXAMPLES = {
   },
   linkedSelects: {
     label: "Linked Select Fields Example",
+    initialValues: {
+      carBrand: "toyota",
+    },
     fields: [
       {
         name: "carBrand",
