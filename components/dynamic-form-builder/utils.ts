@@ -34,7 +34,7 @@ export function buildAjvSchemaFromPath(path: string, validator: object) {
   // ✅ If path is empty, just ensure top-level object typing if missing
   if (segments.length === 0) {
     // Add `type: "object"` if not explicitly specified
-    if (!schema.type) {
+    if (!('type' in schema)) {
       schema = {
         type: "object",
         ...schema,
