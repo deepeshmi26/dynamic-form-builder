@@ -24,8 +24,11 @@ export const SelectFormField = ({
 }: Props) => {
   return (
     <Select onValueChange={onChange} value={value as string}>
-      <SelectTrigger className="text-sm sm:text-base !mb-0">
-        <SelectValue placeholder={placeholder || "Select"} />
+      <SelectTrigger className="w-full text-sm sm:text-base !mb-0 text-left">
+        <SelectValue
+          placeholder={placeholder || "Select"}
+          className="truncate text-left"
+        />
       </SelectTrigger>
       <SelectContent>
         {options?.map((opt) => (
