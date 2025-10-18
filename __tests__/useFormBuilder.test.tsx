@@ -157,7 +157,7 @@ describe("useFormBuilder Hook", () => {
       expect(contextValue.updateState).toBeDefined();
     });
 
-    it("2. Register should save the config, initialConfig, setState call & also store registerOnChangeRecord", () => {
+    it("2. Register should save the config, initialState, setState call & also store registerOnChangeRecord", () => {
       const mockOnMount = jest.fn();
 
       render(
@@ -181,7 +181,7 @@ describe("useFormBuilder Hook", () => {
 
       expect(contextValue.registry["testField"]).toBeDefined();
       expect(contextValue.registry["testField"].config).toEqual(fieldConfig);
-      expect(contextValue.registry["testField"].initialConfig).toEqual(
+      expect(contextValue.registry["testField"].initialState).toEqual(
         fieldConfig
       );
       expect(contextValue.registry["testField"].setState).toBe(mockSetState);

@@ -36,7 +36,7 @@ export function useFormBuilder<T extends FieldValues>({
   });
 
   const registry = useRef<FormRegistryContext<T>["registry"]>({}); // Store registered field components
-  const onChangeRecord = useRef<FormRegistryContext<T>["onChangeRecord"]>({}); // Track conditional field dependencies
+  const onChangeRegistry = useRef<FormRegistryContext<T>["onChangeRecord"]>({}); // Track conditional field dependencies
 
   const handleSubmit: SubmitHandler<T> = (values) => {
     if (onSubmit) onSubmit(values);
@@ -53,7 +53,7 @@ export function useFormBuilder<T extends FieldValues>({
   );
 
   // Register conditional field dependencies when the field is mounted
-  const registerOnChangeRecord = useCallback(
+  const registerOnChangeUpdates = useCallback(
     (fullFieldNameWithPath: string, fieldConfig: FormFieldConfig) => {
       const { onConditionMatch } = fieldConfig;
       if (!onConditionMatch?.length) return;
@@ -64,12 +64,12 @@ export function useFormBuilder<T extends FieldValues>({
         const conditionFields = Object.keys(rule.if?.properties || {}); // Get fields that trigger conditions
         conditionFields.forEach((depField) => {
           const depFieldNameWithPath = getFullFieldNameWithPath(depField, parentPath);
-          if (!onChangeRecord.current![depFieldNameWithPath]) {
-            onChangeRecord.current![depFieldNameWithPath] = [];
+          if (!onChangeRegistry.current![depFieldNameWithPath]) {
+            onChangeRegistry.current![depFieldNameWithPath] = [];
           }
           const ifCondition = buildAjvSchemaFromPath(parentPath, rule.if);
           
-          onChangeRecord.current![depFieldNameWithPath].push({
+          onChangeRegistry.current![depFieldNameWithPath].push({
             if: ifCondition,
             then: rule.then || {},
             else: rule.else || {},
@@ -78,17 +78,17 @@ export function useFormBuilder<T extends FieldValues>({
         });
       });
     },
-    [onChangeRecord]
+    [onChangeRegistry]
   );
 
   // Unregister field from registry when the field is unmounted
   const unregister = useCallback(
     (name: Path<T>) => {
       if (registry.current?.[name]) delete registry.current[name as string];
-      if (onChangeRecord.current?.[name])
-        delete onChangeRecord.current[name as string];
+      if (onChangeRegistry.current?.[name])
+        delete onChangeRegistry.current[name as string];
     },
-    [registry, onChangeRecord]
+    [registry, onChangeRegistry]
   );
 
   // Register field in registry and change tracking
@@ -99,27 +99,27 @@ export function useFormBuilder<T extends FieldValues>({
       setStateCall: (state: T[keyof T]) => void
     ) => {
       if (!registry.current) return;
-      registerOnChangeRecord(fullFieldNameWithPath, fieldConfig);
+      registerOnChangeUpdates(fullFieldNameWithPath, fieldConfig);
       registry.current[fullFieldNameWithPath as string] = {
         config: fieldConfig as FormFieldConfig & { name: FieldPath<T> },
         setState: setStateCall,
-        initialConfig: fieldConfig as FormFieldConfig & { name: FieldPath<T> },
+        initialState: fieldConfig as FormFieldConfig & { name: FieldPath<T> },
       } as T[keyof T];
     },
-    [registerOnChangeRecord]
+    [registerOnChangeUpdates]
   );
 
   // Run conditional field dependencies by validating the conditions in the onChangeRecord
   // and applying the changes to the target fields.
   const evaluateConditionsAndUpdate = useCallback(
     (fieldName: string, allValues: unknown) => {
-      if (!onChangeRecord.current || !onChangeRecord.current[fieldName]) return;
+      if (!onChangeRegistry.current || !onChangeRegistry.current[fieldName]) return;
 
       // Accumulates field changes for each rule
       const collectedChange: Record<string, Partial<FormFieldConfig>> = {}; 
 
       const dependentFields = new Set<string>();
-      onChangeRecord.current[fieldName].forEach((rule: ChangeRule<T>) => {
+      onChangeRegistry.current[fieldName].forEach((rule: ChangeRule<T>) => {
         Object.keys(rule.then).forEach((key) => {
           const targetField = getFullFieldNameWithPath(key, rule.parentPath);
           dependentFields.add(targetField);
@@ -134,7 +134,7 @@ export function useFormBuilder<T extends FieldValues>({
       });
 
       const fieldsWhichWereUpdated = new Set<string>();
-      onChangeRecord.current[fieldName].forEach((rule: ChangeRule<T>) => {
+      onChangeRegistry.current[fieldName].forEach((rule: ChangeRule<T>) => {
         const { isValid } = validateAjv(rule.if, allValues);
         if (isValid) {
           Object.keys(rule.then).forEach((key) => {
@@ -170,10 +170,10 @@ export function useFormBuilder<T extends FieldValues>({
       fieldsToReset.forEach((field) => {
         const target = registry.current?.[field];
         if (!target) return;
-        const initialConfig = target.initialState ?? ({} as Partial<FormFieldConfig>);
+        const initialState = target.initialState ?? ({} as Partial<FormFieldConfig>);
         const mergedConfig = mergeDeep(
           {} as Partial<FormFieldConfig>,
-          initialConfig as Record<string, unknown>
+          initialState as Record<string, unknown>
         );
         registry.current![field].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
         target.setState(mergedConfig); // Apply merged configuration to target field
@@ -182,10 +182,10 @@ export function useFormBuilder<T extends FieldValues>({
       Object.keys(collectedChange).forEach((targetFieldName) => {
         const target = registry.current?.[targetFieldName];
         if (!target) return;
-        const initialConfig = target.initialState ?? ({} as Partial<FormFieldConfig>);
+        const initialState = target.initialState ?? ({} as Partial<FormFieldConfig>);
         const mergedConfig = mergeDeep(
           {} as Partial<FormFieldConfig>,
-          initialConfig as Record<string, unknown>,
+          initialState as Record<string, unknown>,
           collectedChange[targetFieldName] as Record<string, unknown>
         );
         registry.current![targetFieldName].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
@@ -219,8 +219,8 @@ export function useFormBuilder<T extends FieldValues>({
       unregister,
       updateState,
       onChange: handleGlobalChange,
-      registerOnChangeRecord,
-      onChangeRecord: onChangeRecord.current,
+      registerOnChangeRecord: registerOnChangeUpdates,
+      onChangeRecord: onChangeRegistry.current,
     },
   } as const;
 }
