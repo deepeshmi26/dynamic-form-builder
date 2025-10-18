@@ -1,13 +1,10 @@
 "use client";
 
 import { FormBuilder } from "@/components/dynamic-form-builder/FormBuilder";
+import { FormConfig } from "@/components/dynamic-form-builder/types";
 import { Button } from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
-import { ArrayInlineAdapter } from "./Adapter";
-import {
-  FormConfig,
-  FormFieldConfig,
-} from "@/components/dynamic-form-builder/types";
+import { SpecialTextFormField } from "./Adapter";
 
 export function FormView({ config }: { config: FormConfig }) {
   const handleSubmit = (values: FieldValues) => {
@@ -26,18 +23,8 @@ export function FormView({ config }: { config: FormConfig }) {
   return (
     <FormBuilder
       adapter={{
-        ARRAY_INLINE: (props: {
-          name?: string;
-          structure?: FormFieldConfig[];
-          path?: string;
-        }) => {
-          return (
-            <ArrayInlineAdapter
-              name={props.name || ""}
-              structure={props.structure || []}
-              path={props.path || ""}
-            />
-          );
+        SPECIAL_INPUT: (props) => {
+          return <SpecialTextFormField {...props} />;
         },
       }}
       formConfig={config}
