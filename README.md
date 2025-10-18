@@ -66,6 +66,7 @@ npm run dev
 - **Custom Styling**: Tailwind CSS classes for complete design control
 - **TypeScript**: Full TypeScript support with comprehensive type definitions
 - **JSON Editor**: Built-in JSON editor for form configuration
+- **Initial Values**: Accepts initial values in configuration
 
 ### Advanced Features
 
