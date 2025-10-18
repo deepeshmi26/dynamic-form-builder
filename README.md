@@ -61,6 +61,7 @@ npm run dev
 - **Layout Support**: Vertical and horizontal form layouts
 - **Custom Styling**: Tailwind CSS classes for complete design control
 - **TypeScript**: Full TypeScript support with comprehensive type definitions
+- **JSON Editor**: Built-in JSON editor for form configuration
 
 ### Advanced Features
 - **Dynamic Field Updates**: Fields can update other fields based on conditions
