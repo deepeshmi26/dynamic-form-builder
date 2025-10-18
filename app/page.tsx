@@ -21,8 +21,8 @@ export default function Home() {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="h-6 w-6" />
+            <Button >
+              Generate Form
             </Button>
           </SheetTrigger>
           <SheetContent
@@ -42,14 +42,13 @@ export default function Home() {
       </div>
 
       {/* JSON Editor - Hidden on mobile, visible on desktop */}
-      <div className="hidden lg:flex lg:w-1/2 bg-black p-6 overflow-hidden h-full max-h-screen">
-        <div className="w-full">
-          <h1 className="text-3xl font-bold text-white mb-6">JSON Editor</h1>
+      <div className="hidden lg:flex flex-col lg:w-1/2 bg-black p-6 overflow-hidden h-full max-h-screen">
+  
+          <h1 className="text-3xl font-bold text-white">JSON Editor</h1>
           <JsonEditor
             onValidJson={handleValidJson}
             formSamples={FORM_EXAMPLES}
           />
-        </div>
       </div>
 
       {/* Form Preview - Always visible */}
@@ -57,9 +56,8 @@ export default function Home() {
         <h1 className="text-3xl font-bold lg:mb-6 mt-16 lg:mt-0">
           Form Preview
         </h1>
-        <div className="pt-6">
           <FormView config={formConfig} />
-        </div>
+        
       </div>
     </div>
   );

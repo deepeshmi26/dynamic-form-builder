@@ -81,9 +81,7 @@ export function JsonEditor({
       <Card className="flex flex-col gap-2 flex-1 min-h-0 p-4">
         <div className=" flex-shrink-0">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
-            <h2 className="text-xl sm:text-2xl font-semibold">
-              JSON Structure
-            </h2>
+            
             <div className="flex flex-col lg:flex-row gap-2 w-full lg:w-auto">
               <div className="flex-1 lg:flex-none">
                 <Select onValueChange={loadExample}>
