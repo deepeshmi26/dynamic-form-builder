@@ -1,14 +1,8 @@
 export const FORM_EXAMPLES = {
-  contact: {
+  simpleContactForm: {
     label: "Simple Contact Form",
     settings: {
-      layout: "vertical",
-      className: "bg-gray-50 p-6 rounded-lg",
-      defaultClassNames: {
-        body: "mb-4 p-3 border border-gray-200 rounded",
-        label: "text-gray-700 font-medium",
-        field: "bg-white border border-gray-300 rounded-md",
-      },
+     
     },
     fields: [
       {
@@ -17,11 +11,6 @@ export const FORM_EXAMPLES = {
         type: "DATE",
         placeholder: "Select your birth date",
         required: true,
-        classNames: {
-          body: "border-b border-gray-200 pb-4",
-          label: "text-blue-600 font-semibold",
-          field: "bg-white border-2 border-blue-200",
-        },
       },
       {
         name: "name",
@@ -29,55 +18,12 @@ export const FORM_EXAMPLES = {
         type: "TEXT",
         placeholder: "Enter your full name",
         required: true,
-        classNames: {
-          body: "bg-green-50 p-3 rounded",
-          label: "text-green-700 font-bold",
-        },
         validator: {
           minLength: 12,
           maxLength: 50,
         },
       },
-      {
-        name: "phoneNumber",
-        label: "Phone Number",
-        type: "TEXT",
-        placeholder: "Enter your phone number",
-        onConditionMatch: [
-          {
-            if: {
-              properties: {
-                phoneNumber: {
-                  pattern: "^\\+?[1-9][0-9]{7,14}$",
-                },
-              },
-            },
-            then: {
-              preferredContact: {
-                visible: true,
-                required: true,
-              },
-            },
-            else: {
-              preferredContact: {
-                visible: true,
-                required: false,
-              },
-            },
-          },
-        ],
-      },
-      {
-        name: "preferredContact",
-        label: "Preferred Contact Method",
-        type: "SELECT",
-        placeholder: "Select contact method",
-        options: [
-          { value: "phone", label: "Phone" },
-          { value: "email", label: "Email" },
-          { value: "both", label: "Both Phone and Email" },
-        ],
-      },
+      
       {
         name: "favoriteFood",
         label: "Select your favorite food",
@@ -103,7 +49,6 @@ export const FORM_EXAMPLES = {
       {
         name: "socialHandles",
         label: "Social media handles",
-        renderComponent: "ARRAY_INLINE",
         type: "ARRAY",
         structure: [
           {
@@ -153,9 +98,242 @@ export const FORM_EXAMPLES = {
       },
     ],
   },
+  contactFormWithSemanticStyling: {
+    label: "Simple Contact Form (with Semantic Styling)",
+    settings: {
+      layout: "vertical",
+      className: "bg-gray-50 p-6 rounded-lg",
+      defaultClassNames: {
+        body: "mb-4 p-3 border border-gray-200 rounded",
+        label: "text-gray-700 font-medium",
+        field: "bg-white border border-gray-300 rounded-md",
+      },
+    },
+    fields: [
+      {
+        name: "dob",
+        label: "Date of Birth",
+        type: "DATE",
+        placeholder: "Select your birth date",
+        required: true,
+        classNames: {
+          body: "border-b border-gray-200 pb-4",
+          label: "text-blue-600 font-semibold",
+          field: "bg-white border-2 border-blue-200",
+        },
+      },
+      {
+        name: "name",
+        label: "Full Name",
+        type: "TEXT",
+        placeholder: "Enter your full name",
+        classNames: {
+          body: "bg-green-50 p-3 rounded",
+          label: "text-green-700 font-bold",
+        },
+        validator: {
+          minLength: 12,
+          maxLength: 50,
+        },
+      },
+      {
+        name: "favoriteFood",
+        label: "Select your favorite food",
+        type: "CHECKBOX",
+        required: true,
+        options: [
+          { value: "pizza", label: "Pizza" },
+          { value: "burger", label: "Burger" },
+          { value: "salad", label: "Salad" },
+          { value: "sushi", label: "Sushi" },
+        ],
+      },
+      {
+        name: "email",
+        label: "Email Address",
+        type: "TEXT",
+        placeholder: "Enter your email",
+        required: true,
+        validator: {
+          pattern: "^[A-Za-z0-9._-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$",
+        },
+      },
+      {
+        name: "socialHandles",
+        label: "Social media handles",
+        type: "ARRAY",
+        structure: [
+          {
+            name: "platform",
+            label: "Platform",
+            type: "SELECT",
+            placeholder: "Select platform",
+            options: [
+              { value: "linkedin", label: "LinkedIn" },
+              { value: "instagram", label: "Instagram" },
+            ],
+            required: true,
+            
+          },
+          {
+            name: "url",
+            label: "Profile URL",
+            type: "TEXT",
+            placeholder: "Enter the profile URL",
+            // required: true,
+            validator:{
+              type: "string",
+              minLength: 10,
+            }
+          },
+        ],
+      },
+      {
+        name: "message",
+        label: "Message",
+        type: "TEXTAREA",
+        placeholder: "Enter your message",
+        required: true,
+      },
+    ],
+  },
+  contactFormWithArray: {
+    label: "Simple Contact Form (with Array)",
+    fields: [
+      {
+        name: "socialHandles",
+        label: "Social media handles",
+        type: "ARRAY",
+        structure: [
+          {
+            name: "platform",
+            label: "Platform",
+            type: "SELECT",
+            placeholder: "Select platform",
+            options: [
+              { value: "linkedin", label: "LinkedIn" },
+              { value: "instagram", label: "Instagram" },
+            ],
+            required: true,
+            
+          },
+          {
+            name: "url",
+            label: "Profile URL",
+            type: "TEXT",
+            placeholder: "Enter the profile URL",
+            required: true,
+            validator:{
+              type: "string",
+              minLength: 10,
+            }
+          },
+        ],
+      },
+      {
+        name: "dob",
+        label: "Date of Birth",
+        type: "DATE",
+        placeholder: "Select your birth date",
+        required: true,
+      },
+      {
+        name: "name",
+        label: "Full Name",
+        type: "TEXT",
+        placeholder: "Enter your full name",
+        required: true,
+        validator: {
+          minLength: 12,
+          maxLength: 50,
+        },
+      },
+      
+      {
+        name: "favoriteFood",
+        label: "Select your favorite food",
+        type: "CHECKBOX",
+        required: true,
+        options: [
+          { value: "pizza", label: "Pizza" },
+          { value: "burger", label: "Burger" },
+          { value: "salad", label: "Salad" },
+          { value: "sushi", label: "Sushi" },
+        ],
+      },
+    ],
+  },
+  contactFormWithAdapter: {
+    label: "Simple Contact Form (with Adapter)",
+    fields: [
+      {
+        name: "socialHandles",
+        label: "Social media handles",
+        type: "ARRAY",
+        structure: [
+          {
+            name: "platform",
+            label: "Platform",
+            type: "SELECT",
+            placeholder: "Select platform",
+            options: [
+              { value: "linkedin", label: "LinkedIn" },
+              { value: "instagram", label: "Instagram" },
+            ],
+            required: true,
+            
+          },
+          {
+            name: "url",
+            label: "Profile URL",
+            type: "TEXT",
+            placeholder: "Enter the profile URL",
+            required: true,
+            validator:{
+              type: "string",
+              minLength: 10,
+            }
+          },
+        ],
+      },
+      {
+        name: "dob",
+        label: "Date of Birth",
+        type: "DATE",
+        placeholder: "Select your birth date",
+        required: true,
+      },
+      {
+        name: "name",
+        label: "Full Name",
+        type: "TEXT",
+        renderComponent: "SPECIAL_INPUT",
+        placeholder: "Enter your full name",
+        required: true,
+        validator: {
+          minLength: 12,
+          maxLength: 50,
+        },
+      },
+      
+      {
+        name: "favoriteFood",
+        label: "Select your favorite food",
+        type: "CHECKBOX",
+        required: true,
+        options: [
+          { value: "pizza", label: "Pizza" },
+          { value: "burger", label: "Burger" },
+          { value: "salad", label: "Salad" },
+          { value: "sushi", label: "Sushi" },
+        ],
+      },
+    ],
+  },
+
 
   feedback: {
-    label: "Product Feedback Form",
+    label: "Product Feedback Form (horizontal layout)",
     settings: {
       layout: "horizontal",
     },
@@ -206,57 +384,12 @@ export const FORM_EXAMPLES = {
     ],
   },
 
-  subscription: {
-    label: "Newsletter Subscription",
-    fields: [
-      {
-        name: "email",
-        label: "Email Address",
-        type: "TEXT",
-        placeholder: "Enter your email",
-        required: true,
-        validator: {
-          pattern: "^[A-Za-z0-9._-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$",
-        },
-      },
-      {
-        name: "interests",
-        label: "Topics of Interest",
-        type: "CHECKBOX",
-        required: true,
-        options: [
-          { value: "tech", label: "Technology" },
-          { value: "design", label: "Design" },
-          { value: "business", label: "Business" },
-          { value: "lifestyle", label: "Lifestyle" },
-        ],
-      },
-      {
-        name: "frequency",
-        label: "Email Frequency",
-        type: "RADIO",
-        required: true,
-        options: [
-          { value: "daily", label: "Daily Digest" },
-          { value: "weekly", label: "Weekly Roundup" },
-          { value: "monthly", label: "Monthly Newsletter" },
-        ],
-      },
-      {
-        name: "terms",
-        label: "I agree to receive marketing emails",
-        type: "BOOLEAN",
-        required: true,
-      },
-    ],
-  },
-
   jobApplication: {
-    label: "Job Application Form",
+    label: "Job Application Form (conditional visibility)",
     fields: [
       {
         name: "position",
-        label: "Position Applied For",
+        label: "Position Applied For (Select Software Developer to show programming languages)" ,
         type: "SELECT",
         required: true,
         options: [
@@ -310,7 +443,7 @@ export const FORM_EXAMPLES = {
       },
       {
         name: "workLocation",
-        label: "Preferred Work Location",
+        label: "Preferred Work Location (Select On-site to show relocation willing)",
         type: "RADIO",
         required: true,
         options: [
@@ -353,77 +486,5 @@ export const FORM_EXAMPLES = {
     ],
   },
 
-  dynamicSurvey: {
-    label: "Dynamic Customer Survey",
-    fields: [
-      {
-        name: "customerType",
-        label: "What type of customer are you?",
-        type: "SELECT",
-        required: true,
-        options: [
-          { value: "business", label: "Business" },
-          { value: "individual", label: "Individual" },
-        ],
-        onConditionMatch: [
-          {
-            if: {
-              properties: {
-                customerType: { const: "business" },
-              },
-            },
-            then: {
-              companySize: {
-                visible: true,
-                required: true,
-              },
-              industry: {
-                visible: true,
-                required: true,
-              },
-            },
-            else: {
-              companySize: {
-                visible: false,
-                required: false,
-              },
-              industry: {
-                visible: false,
-                required: false,
-              },
-            },
-          },
-        ],
-      },
-      {
-        name: "companySize",
-        label: "Company Size",
-        type: "SELECT",
-        visible: false,
-        options: Array.from({ length: 6 }, (_, i) => {
-          const ranges = [
-            "1-10",
-            "11-50",
-            "51-200",
-            "201-500",
-            "501-1000",
-            "1000+",
-          ];
-          return { value: String(i), label: ranges[i] };
-        }),
-      },
-      {
-        name: "industry",
-        label: "Industry",
-        type: "SELECT",
-        visible: false,
-        options: [
-          { value: "tech", label: "Technology" },
-          { value: "finance", label: "Finance" },
-          { value: "healthcare", label: "Healthcare" },
-          { value: "retail", label: "Retail" },
-        ],
-      },
-    ],
-  },
+  
 } as const;
