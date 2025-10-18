@@ -52,49 +52,6 @@ export const FORM_EXAMPLES = {
         },
       },
       {
-        name: "socialHandles",
-        label: "Social media handles",
-        type: "ARRAY",
-        structure: [
-          {
-            name: "platform",
-            label: "Platform",
-            type: "SELECT",
-            placeholder: "Select platform",
-            options: [
-              { value: "linkedin", label: "LinkedIn" },
-              { value: "instagram", label: "Instagram" },
-            ],
-            required: true,
-            onConditionMatch: [
-              {
-                if: {
-                  properties: {
-                    platform: { const: "linkedin" },
-                  },
-                },
-                then: {
-                  url: {
-                    required: true,
-                  },
-                },
-              },
-            ],
-          },
-          {
-            name: "url",
-            label: "Profile URL",
-            type: "TEXT",
-            placeholder: "Enter the profile URL",
-            // required: true,
-            validator:{
-              type: "string",
-              minLength: 10,
-            }
-          },
-        ],
-      },
-      {
         name: "message",
         label: "Message",
         type: "TEXTAREA",
@@ -103,6 +60,7 @@ export const FORM_EXAMPLES = {
       },
     ],
   },
+  
   contactFormWithSemanticStyling: {
     label: "Simple Contact Form (with Semantic Styling)",
     settings: {
@@ -271,6 +229,116 @@ export const FORM_EXAMPLES = {
           { value: "salad", label: "Salad" },
           { value: "sushi", label: "Sushi" },
         ],
+      },
+    ],
+  },
+  contactFormWithInitialValues: {
+    label: "Simple Contact Form (with initial values)",
+    settings: {
+     
+    },
+    initialValues: {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      favoriteFood: "pizza",
+      socialHandles: [
+        {
+          platform: "linkedin",
+          url: "https://www.linkedin.com/in/john-doe",
+        },
+      ],
+    },
+    fields: [
+      {
+        name: "dob",
+        label: "Date of Birth",
+        type: "DATE",
+        placeholder: "Select your birth date",
+        required: true,
+      },
+      {
+        name: "name",
+        label: "Full Name",
+        type: "TEXT",
+        placeholder: "Enter your full name",
+        required: true,
+        validator: {
+          minLength: 12,
+          maxLength: 50,
+        },
+      },
+      
+      {
+        name: "favoriteFood",
+        label: "Select your favorite food",
+        type: "CHECKBOX",
+        required: true,
+        options: [
+          { value: "pizza", label: "Pizza" },
+          { value: "burger", label: "Burger" },
+          { value: "salad", label: "Salad" },
+          { value: "sushi", label: "Sushi" },
+        ],
+      },
+      {
+        name: "email",
+        label: "Email Address",
+        type: "TEXT",
+        placeholder: "Enter your email",
+        required: true,
+        validator: {
+          pattern: "^[A-Za-z0-9._-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$",
+        },
+      },
+      {
+        name: "socialHandles",
+        label: "Social media handles",
+        type: "ARRAY",
+        structure: [
+          {
+            name: "platform",
+            label: "Platform",
+            type: "SELECT",
+            placeholder: "Select platform",
+            options: [
+              { value: "linkedin", label: "LinkedIn" },
+              { value: "instagram", label: "Instagram" },
+            ],
+            required: true,
+            onConditionMatch: [
+              {
+                if: {
+                  properties: {
+                    platform: { const: "linkedin" },
+                  },
+                },
+                then: {
+                  url: {
+                    required: true,
+                  },
+                },
+              },
+            ],
+          },
+          {
+            name: "url",
+            label: "Profile URL",
+            type: "TEXT",
+            placeholder: "Enter the profile URL",
+            // required: true,
+            validator:{
+              type: "string",
+              minLength: 10,
+            }
+          },
+        ],
+      },
+      {
+        name: "message",
+        label: "Message",
+        type: "TEXTAREA",
+        placeholder: "Enter your message",
+        required: true,
       },
     ],
   },
