@@ -76,8 +76,8 @@ export type FormProps<T extends FieldValues> = {
 };
 
 export type RegistryEntry<T extends FieldValues> = {
-  config: FormFieldConfig & { name: FieldPath<T> };
-  initialConfig: FormFieldConfig & { name: FieldPath<T> };
+  currentState: FormFieldConfig & { name: FieldPath<T> };
+  initialState: FormFieldConfig & { name: FieldPath<T> };
   setState: (state: unknown) => void;
 };
 

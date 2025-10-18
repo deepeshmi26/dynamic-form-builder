@@ -166,29 +166,29 @@ export function useFormBuilder<T extends FieldValues>({
           fieldsToReset.add(field);
         }
       });
-      
+
       fieldsToReset.forEach((field) => {
         const target = registry.current?.[field];
         if (!target) return;
-        const initialConfig = target.initialConfig ?? ({} as Partial<FormFieldConfig>);
+        const initialConfig = target.initialState ?? ({} as Partial<FormFieldConfig>);
         const mergedConfig = mergeDeep(
           {} as Partial<FormFieldConfig>,
           initialConfig as Record<string, unknown>
         );
-        registry.current![field].config = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
+        registry.current![field].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
         target.setState(mergedConfig); // Apply merged configuration to target field
       });
 
       Object.keys(collectedChange).forEach((targetFieldName) => {
         const target = registry.current?.[targetFieldName];
         if (!target) return;
-        const initialConfig = target.initialConfig ?? ({} as Partial<FormFieldConfig>);
+        const initialConfig = target.initialState ?? ({} as Partial<FormFieldConfig>);
         const mergedConfig = mergeDeep(
           {} as Partial<FormFieldConfig>,
           initialConfig as Record<string, unknown>,
           collectedChange[targetFieldName] as Record<string, unknown>
         );
-        registry.current![targetFieldName].config = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
+        registry.current![targetFieldName].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
         target.setState(mergedConfig); // Apply merged configuration to target field
       });
     },
