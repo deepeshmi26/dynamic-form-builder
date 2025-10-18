@@ -23,7 +23,7 @@ export function FormBuilder<T extends FieldValues>(
   return (
     <Form {...form}>
       <FormRegistryContext.Provider
-        value={contextValue as FormRegistryContextType<FieldValues>}
+        value={contextValue as unknown as FormRegistryContextType<FieldValues>}
       >
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <div className={cn("space-y-4", settings?.className)}>

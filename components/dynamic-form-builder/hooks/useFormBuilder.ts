@@ -115,7 +115,8 @@ export function useFormBuilder<T extends FieldValues>({
     (fieldName: string, allValues: unknown) => {
       if (!onChangeRecord.current || !onChangeRecord.current[fieldName]) return;
 
-      const collectedChange: Record<string, Partial<FormFieldConfig>> = {}; // Accumulate field changes
+      // Accumulates field changes for each rule
+      const collectedChange: Record<string, Partial<FormFieldConfig>> = {}; 
 
       onChangeRecord.current[fieldName].forEach((rule: ChangeRule<T>) => {
         const { isValid } = validateAjv(rule.if, allValues);

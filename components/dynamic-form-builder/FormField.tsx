@@ -198,14 +198,14 @@ export function FormField<T extends FieldValues>({
           return null;
       }
     },
-    [label, state, adapter, onChange, form, fieldName, fullFieldNameWithPath]
+    [label, state, adapter, onChange, form, fullFieldNameWithPath]
   );
   return (
     <>
       {state.visible !== false && (
         <RHFFormField<T, FieldPath<T>>
           control={control}
-          name={fullFieldNameWithPath}
+          name={fullFieldNameWithPath as FieldPath<T>}
           render={({
             field,
           }: {
