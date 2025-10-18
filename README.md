@@ -5,7 +5,7 @@ A powerful, flexible React form builder that generates forms from JSON configura
 ## 📋 Table of Contents
 
 - [Short Summary](#short-summary)
-- [Installation & Run Instructions](#installation--run-instructions)
+- [Installation &amp; Run Instructions](#installation--run-instructions)
 - [Features](#features)
 - [Code Example](#code-example)
 - [API Reference](#api-reference)
@@ -25,17 +25,20 @@ Dynamic Form Builder is a React component library that allows you to create comp
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd dynamic-form-builder
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -55,6 +58,7 @@ npm run dev
 ## ✨ Features
 
 ### Core Features
+
 - **JSON-Driven Forms**: Define forms using simple JSON configuration
 - **Multiple Field Types**: Support for text, textarea, select, checkbox, radio, date, and array fields
 - **Validation**: Built-in validation with customizable rules
@@ -64,6 +68,7 @@ npm run dev
 - **JSON Editor**: Built-in JSON editor for form configuration
 
 ### Advanced Features
+
 - **Dynamic Field Updates**: Fields can update other fields based on conditions
 - **Nested Arrays**: Support for complex nested array structures
 - **Adapter Pattern**: Extensible architecture for custom field components
@@ -71,6 +76,7 @@ npm run dev
 - **Semantic ClassNames**: Consistent styling system with semantic class names
 
 ### Field Types Supported
+
 - `TEXT` - Single line text input
 - `TEXTAREA` - Multi-line text input
 - `SELECT` - Dropdown selection
@@ -79,6 +85,60 @@ npm run dev
 - `DATE` - Date picker
 - `ARRAY` - Dynamic array of fields
 - `BOOLEAN` - True/false checkbox
+
+## 🔧 Low Level Design Decisions
+
+### Framework Choice: **Next.js** vs **React**
+- Chose **Next.js** to leverage:
+  - Built-in integration with **Shadcn UI** components
+  - Out-of-the-box routing capabilities
+  - Native **Tailwind CSS** support
+
+### Validation: **Ajv** vs **Zod**
+- Selected **Ajv** because:
+  - Provides robust JSON-driven form configuration validation
+  - Eliminates need for maintaining custom validation layer (which would be needed with **Zod**)
+  - Main challenge was limited **React Hook Form** resolver support
+  - Implemented custom resolver using **Ajv** as the validator
+
+### Registry-Based Architecture
+The form builder uses a dual-registry system stored in React Context to manage field state and conditional updates:
+
+**Field Registry**
+- Maintains a map of all form fields: 
+`{fieldPath: FieldState}` which looks like following
+```typescript
+{
+    "firstName": {
+        currentState: {},
+        initialState: {},
+        setState: //Function to updte the state
+    }
+}
+```
+- Enables updating any field's state from any component within form context
+
+**Change Registry** 
+- Tracks conditional field relationships: `{fieldPath: ConditionalConfig}`
+```typescript
+{
+    if: Condition to evaluate
+    then: Updates to apply if condition is true
+    else: Updates to apply if condition is false
+    parentPath: Path to parent field (for nested updates)
+}
+```
+- Enables targeted updates when specific fields change
+- Prevents unnecessary re-renders of unaffected fields
+
+This dual-registry approach provides:
+- **Centralized State Management**: All field states in one place
+- **Ref-Based Updates**: Using refs instead of state prevents unnecessary re-renders
+- **Debounced Updates**: Implements 300ms debounce on onChange handlers to prevent rapid-fire re-renders during typing
+- **Efficient Updates**: Only affected fields re-render with debounced onChange handlers
+- **Deep Field Access**: Any field can update any other field
+- **Conditional Logic**: Complex field relationships handled automatically
+
 
 ## 💻 Code Example
 
@@ -295,17 +355,18 @@ const arrayFormConfig = {
 
 ### FormBuilder Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `formConfig` | `FormConfig` | JSON configuration object defining the form |
-| `onSubmit` | `SubmitHandler<T>` | Callback function called when form is submitted |
-| `adapter` | `Record<string, ComponentType>` | Custom field component adapters |
-| `initialValues` | `DefaultValues<T>` | Initial form values |
-| `onChange` | `(fieldName, value, allValues) => void` | Callback for field value changes |
+| Prop              | Type                                      | Description                                     |
+| ----------------- | ----------------------------------------- | ----------------------------------------------- |
+| `formConfig`    | `FormConfig`                            | JSON configuration object defining the form     |
+| `onSubmit`      | `SubmitHandler<T>`                      | Callback function called when form is submitted |
+| `adapter`       | `Record<string, ComponentType>`         | Custom field component adapters                 |
+| `initialValues` | `DefaultValues<T>`                      | Initial form values                             |
+| `onChange`      | `(fieldName, value, allValues) => void` | Callback for field value changes                |
 
 ### FormConfig Structure
 
 ```typescript
+
 interface FormConfig {
   label?: string;
   settings?: FormSettings;
@@ -328,6 +389,7 @@ interface FormFieldConfig {
   type: FormItemType;
   options?: FormOption[];
   placeholder?: string;
+  renderComponent?: string; //used with adapter
   validator?: Record<string, unknown>;
   visible?: boolean;
   required?: boolean;
@@ -338,6 +400,7 @@ interface FormFieldConfig {
     field?: string;
   };
   onConditionMatch?: ConditionalRule[];
+  [key: string]: any //It can accept any number of prop to be passsed down directly to children
 }
 ```
 
