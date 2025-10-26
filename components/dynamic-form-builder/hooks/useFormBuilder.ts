@@ -16,9 +16,13 @@ import {
   ChangeRule,
   FormFieldConfig,
   FormProps,
-  FormRegistryContext
+  FormRegistryContext,
 } from "../types";
-import { buildAjvSchemaFromPath, getFullFieldNameWithPath, validateAjv } from "../utils";
+import {
+  buildAjvSchemaFromPath,
+  getFullFieldNameWithPath,
+  validateAjv,
+} from "../utils";
 import { AjvValidator } from "../validator/AjvValidator";
 
 const Validator = new AjvValidator();
@@ -33,11 +37,15 @@ export function useFormBuilder<T extends FieldValues>({
   const form = useForm<T>({
     defaultValues: formConfig.initialValues as DefaultValues<T>,
     mode: "onChange",
-    resolver: Validator.customAjvResolver(Validator.generateSchema(fields || [])) as Resolver<T>,
+    resolver: Validator.customAjvResolver(
+      Validator.generateSchema(fields || [])
+    ) as Resolver<T>,
   });
 
   const registry = useRef<FormRegistryContext<T>["registry"]>({});
-  const onChangeRegistry = useRef<FormRegistryContext<T>["onChangeRegistry"]>({});
+  const onChangeRegistry = useRef<FormRegistryContext<T>["onChangeRegistry"]>(
+    {}
+  );
   const registrationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleSubmit: SubmitHandler<T> = (values) => {
@@ -60,16 +68,22 @@ export function useFormBuilder<T extends FieldValues>({
       if (!onConditionMatch?.length) return;
       if (registry.current?.[fullFieldNameWithPath]) return;
 
-      const parentPath = fullFieldNameWithPath.split('.').slice(0, -1).join('.');
+      const parentPath = fullFieldNameWithPath
+        .split(".")
+        .slice(0, -1)
+        .join(".");
       onConditionMatch.forEach((rule) => {
         const conditionFields = Object.keys(rule.if?.properties || {});
         conditionFields.forEach((depField) => {
-          const depFieldNameWithPath = getFullFieldNameWithPath(depField, parentPath);
+          const depFieldNameWithPath = getFullFieldNameWithPath(
+            depField,
+            parentPath
+          );
           if (!onChangeRegistry.current![depFieldNameWithPath]) {
             onChangeRegistry.current![depFieldNameWithPath] = [];
           }
           const ifCondition = buildAjvSchemaFromPath(parentPath, rule.if);
-          
+
           onChangeRegistry.current![depFieldNameWithPath].push({
             if: ifCondition,
             then: rule.then || {},
@@ -89,7 +103,7 @@ export function useFormBuilder<T extends FieldValues>({
           JSON.stringify(obj, (_, v) => (v === undefined ? null : v))
         );
       }
-      
+
       function collectDependentFields(rules: ChangeRule<T>[]) {
         const dependentFields = new Set<string>();
         rules.forEach((rule) => {
@@ -97,10 +111,13 @@ export function useFormBuilder<T extends FieldValues>({
             const targetField = getFullFieldNameWithPath(key, rule.parentPath);
             dependentFields.add(targetField);
           });
-          
+
           if (rule.else) {
             Object.keys(rule.else).forEach((key) => {
-              const targetField = getFullFieldNameWithPath(key, rule.parentPath);
+              const targetField = getFullFieldNameWithPath(
+                key,
+                rule.parentPath
+              );
               dependentFields.add(targetField);
             });
           }
@@ -108,17 +125,21 @@ export function useFormBuilder<T extends FieldValues>({
         return dependentFields;
       }
 
-      function applyFieldChanges(accumlatedChanges: Record<string, Partial<FormFieldConfig>>) {
+      function applyFieldChanges(
+        accumlatedChanges: Record<string, Partial<FormFieldConfig>>
+      ) {
         Object.keys(accumlatedChanges).forEach((targetFieldName) => {
           const target = registry.current?.[targetFieldName];
           if (!target) return;
-          const initialState = target.initialState ?? ({} as Partial<FormFieldConfig>);
+          const initialState =
+            target.initialState ?? ({} as Partial<FormFieldConfig>);
           const mergedConfig = mergeDeep(
             {} as Partial<FormFieldConfig>,
             initialState as Record<string, unknown>,
             accumlatedChanges[targetFieldName] as Record<string, unknown>
           );
-          registry.current![targetFieldName].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
+          registry.current![targetFieldName].currentState =
+            mergedConfig as FormFieldConfig & { name: FieldPath<T> };
           target.setState(mergedConfig);
         });
       }
@@ -127,18 +148,21 @@ export function useFormBuilder<T extends FieldValues>({
         fieldsToReset.forEach((field) => {
           const target = registry.current?.[field];
           if (!target) return;
-          const initialState = target.initialState ?? ({} as Partial<FormFieldConfig>);
+          const initialState =
+            target.initialState ?? ({} as Partial<FormFieldConfig>);
           const mergedConfig = mergeDeep(
             {} as Partial<FormFieldConfig>,
             initialState as Record<string, unknown>
           );
-          registry.current![field].currentState = mergedConfig as FormFieldConfig & { name: FieldPath<T> };
+          registry.current![field].currentState =
+            mergedConfig as FormFieldConfig & { name: FieldPath<T> };
           target.setState(mergedConfig);
         });
       }
-      
+
       allValues = replaceUndefined(allValues);
-      if (!onChangeRegistry.current || !onChangeRegistry.current[fieldName]) return;
+      if (!onChangeRegistry.current || !onChangeRegistry.current[fieldName])
+        return;
 
       const rules = onChangeRegistry.current[fieldName];
       const accumlatedChanges: Record<string, Partial<FormFieldConfig>> = {};
@@ -150,9 +174,15 @@ export function useFormBuilder<T extends FieldValues>({
         if (isValid) {
           Object.keys(rule.then).forEach((key) => {
             updatedFields.add(key);
-            const targetFieldNameWithPath = getFullFieldNameWithPath(key, rule.parentPath);
+            const targetFieldNameWithPath = getFullFieldNameWithPath(
+              key,
+              rule.parentPath
+            );
             accumlatedChanges[targetFieldNameWithPath] = mergeDeep(
-              accumlatedChanges[targetFieldNameWithPath] as Record<string, unknown>,
+              accumlatedChanges[targetFieldNameWithPath] as Record<
+                string,
+                unknown
+              >,
               rule.then[key] as Record<string, unknown>
             );
           });
@@ -160,7 +190,10 @@ export function useFormBuilder<T extends FieldValues>({
           if (Object.keys(rule.else || {}).length > 0) {
             Object.keys(rule.else).forEach((key) => {
               updatedFields.add(key);
-              const targetFieldNameWithPath = getFullFieldNameWithPath(key, rule.parentPath);
+              const targetFieldNameWithPath = getFullFieldNameWithPath(
+                key,
+                rule.parentPath
+              );
               accumlatedChanges[targetFieldNameWithPath] = mergeDeep(
                 accumlatedChanges[key] as Record<string, unknown>,
                 rule.else[key] as Record<string, unknown>
@@ -245,7 +278,12 @@ export function useFormBuilder<T extends FieldValues>({
     }
 
     const timeoutId = setTimeout(() => {
-      if (fields && fields.length > 0 && registry.current && Object.keys(registry.current).length > 0) {
+      if (
+        fields &&
+        fields.length > 0 &&
+        registry.current &&
+        Object.keys(registry.current).length > 0
+      ) {
         evaluateAllFields();
       }
     }, 200);
