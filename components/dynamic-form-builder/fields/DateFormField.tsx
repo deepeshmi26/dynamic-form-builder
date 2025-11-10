@@ -43,6 +43,7 @@ export const DateFormField = ({ value, onChange, placeholder }: Props) => {
         <Calendar
           mode="single"
           selected={dateValue}
+          captionLayout="dropdown"
           onSelect={(d) => {
             if (!d) {
               onChange?.("");

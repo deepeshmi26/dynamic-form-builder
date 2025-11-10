@@ -1,9 +1,30 @@
 export const FORM_EXAMPLES = {
+  formulatEvaluationDemo: {
+    label: "Formula evaluation demo",
+    fields: [
+      {
+        name: "dob",
+        label: "Date of Birth (Enter date to calculate age)",
+        type: "DATE",
+        placeholder: "Select your birth date",
+        required: true,
+      },
+      {
+        name: "age",
+        label: "Age",
+        type: "NUMBER",
+        placeholder: "Enter your age",
+        required: true,
+        formula: "dateDiff(today(), dob, 'years')",
+        validator: {
+          minimum: 18,
+        },
+      },
+    ],
+  },
   simpleContactForm: {
     label: "Simple Contact Form",
-    settings: {
-     
-    },
+    settings: {},
     initialValues: {
       name: "John Doe",
       email: "john.doe@example.com",
@@ -28,7 +49,7 @@ export const FORM_EXAMPLES = {
           maxLength: 50,
         },
       },
-      
+
       {
         name: "favoriteFood",
         label: "Select your favorite food",
@@ -60,7 +81,7 @@ export const FORM_EXAMPLES = {
       },
     ],
   },
-  
+
   contactFormWithSemanticStyling: {
     label: "Simple Contact Form (with Semantic Styling)",
     settings: {
@@ -142,7 +163,6 @@ export const FORM_EXAMPLES = {
               { value: "instagram", label: "Instagram" },
             ],
             required: true,
-            
           },
           {
             name: "url",
@@ -150,10 +170,10 @@ export const FORM_EXAMPLES = {
             type: "TEXT",
             placeholder: "Enter the profile URL",
             // required: true,
-            validator:{
+            validator: {
               type: "string",
               minLength: 10,
-            }
+            },
           },
         ],
       },
@@ -184,7 +204,6 @@ export const FORM_EXAMPLES = {
               { value: "instagram", label: "Instagram" },
             ],
             required: true,
-            
           },
           {
             name: "url",
@@ -192,10 +211,10 @@ export const FORM_EXAMPLES = {
             type: "TEXT",
             placeholder: "Enter the profile URL",
             required: true,
-            validator:{
+            validator: {
               type: "string",
               minLength: 10,
-            }
+            },
           },
         ],
       },
@@ -217,7 +236,7 @@ export const FORM_EXAMPLES = {
           maxLength: 50,
         },
       },
-      
+
       {
         name: "favoriteFood",
         label: "Select your favorite food",
@@ -234,9 +253,7 @@ export const FORM_EXAMPLES = {
   },
   contactFormWithInitialValues: {
     label: "Simple Contact Form (with initial values)",
-    settings: {
-     
-    },
+    settings: {},
     initialValues: {
       name: "John Doe",
       email: "john.doe@example.com",
@@ -267,7 +284,7 @@ export const FORM_EXAMPLES = {
           maxLength: 50,
         },
       },
-      
+
       {
         name: "favoriteFood",
         label: "Select your favorite food",
@@ -326,10 +343,10 @@ export const FORM_EXAMPLES = {
             type: "TEXT",
             placeholder: "Enter the profile URL",
             // required: true,
-            validator:{
+            validator: {
               type: "string",
               minLength: 10,
-            }
+            },
           },
         ],
       },
@@ -360,7 +377,6 @@ export const FORM_EXAMPLES = {
               { value: "instagram", label: "Instagram" },
             ],
             required: true,
-            
           },
           {
             name: "url",
@@ -368,10 +384,10 @@ export const FORM_EXAMPLES = {
             type: "TEXT",
             placeholder: "Enter the profile URL",
             required: true,
-            validator:{
+            validator: {
               type: "string",
               minLength: 10,
-            }
+            },
           },
         ],
       },
@@ -394,7 +410,7 @@ export const FORM_EXAMPLES = {
           maxLength: 50,
         },
       },
-      
+
       {
         name: "favoriteFood",
         label: "Select your favorite food",
@@ -409,7 +425,6 @@ export const FORM_EXAMPLES = {
       },
     ],
   },
-
 
   feedback: {
     label: "Product Feedback Form (horizontal layout)",
@@ -468,7 +483,8 @@ export const FORM_EXAMPLES = {
     fields: [
       {
         name: "position",
-        label: "Position Applied For (Select Software Developer to show programming languages)" ,
+        label:
+          "Position Applied For (Select Software Developer to show programming languages)",
         type: "SELECT",
         required: true,
         options: [
@@ -522,7 +538,8 @@ export const FORM_EXAMPLES = {
       },
       {
         name: "workLocation",
-        label: "Preferred Work Location (Select On-site to show relocation willing)",
+        label:
+          "Preferred Work Location (Select On-site to show relocation willing)",
         type: "RADIO",
         required: true,
         options: [
@@ -573,64 +590,64 @@ export const FORM_EXAMPLES = {
       {
         name: "carBrand",
         label: "Car Brand",
-        type: "SELECT", 
+        type: "SELECT",
         placeholder: "Select car brand",
         required: true,
         options: [
           { value: "toyota", label: "Toyota" },
           { value: "honda", label: "Honda" },
-          { value: "ford", label: "Ford" }
+          { value: "ford", label: "Ford" },
         ],
         onConditionMatch: [
           {
             if: {
               properties: {
-                carBrand: { const: "toyota" }
-              }
+                carBrand: { const: "toyota" },
+              },
             },
             then: {
               carModel: {
                 options: [
                   { value: "camry", label: "Camry" },
                   { value: "corolla", label: "Corolla" },
-                  { value: "rav4", label: "RAV4" }
-                ]
-              }
-            }
+                  { value: "rav4", label: "RAV4" },
+                ],
+              },
+            },
           },
           {
             if: {
               properties: {
-                carBrand: { const: "honda" }
-              }
+                carBrand: { const: "honda" },
+              },
             },
             then: {
               carModel: {
                 options: [
                   { value: "civic", label: "Civic" },
                   { value: "accord", label: "Accord" },
-                  { value: "crv", label: "CR-V" }
-                ]
-              }
-            }
+                  { value: "crv", label: "CR-V" },
+                ],
+              },
+            },
           },
           {
             if: {
               properties: {
-                carBrand: { const: "ford" }
-              }
+                carBrand: { const: "ford" },
+              },
             },
             then: {
               carModel: {
                 options: [
                   { value: "mustang", label: "Mustang" },
                   { value: "f150", label: "F-150" },
-                  { value: "explorer", label: "Explorer" }
-                ]
-              }
-            }
-          }
-        ]
+                  { value: "explorer", label: "Explorer" },
+                ],
+              },
+            },
+          },
+        ],
       },
       {
         name: "carModel",
@@ -638,10 +655,8 @@ export const FORM_EXAMPLES = {
         type: "SELECT",
         placeholder: "Select car model",
         required: true,
-        options: [] // Initially empty, populated based on car brand selection
-      }
-    ]
+        options: [], // Initially empty, populated based on car brand selection
+      },
+    ],
   },
-
-  
 } as const;

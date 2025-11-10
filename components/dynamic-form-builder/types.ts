@@ -7,6 +7,7 @@ import {
 } from "react-hook-form";
 
 export enum FormItemType {
+  NUMBER = "NUMBER",
   SELECT = "SELECT",
   CHECKBOX = "CHECKBOX",
   BOOLEAN = "BOOLEAN",
@@ -56,6 +57,7 @@ export type FormFieldConfig = {
     label?: string;
     field?: string;
   };
+  formula?: string;
   onConditionMatch?: {
     if: {
       properties: Record<string, { const: string }>;
@@ -64,7 +66,6 @@ export type FormFieldConfig = {
     else?: Record<string, Partial<FormFieldConfig>>;
   }[];
   [key: string]: unknown;
-
 };
 
 export type FormProps<T extends FieldValues> = {
@@ -86,7 +87,6 @@ export type ChangeRule<T extends FieldValues> = {
   then: Record<string, Partial<FormFieldConfig>>;
   else: Record<string, Partial<FormFieldConfig>>;
   parentPath?: Path<T>;
-  
 };
 
 export type FormRegistryContext<T extends FieldValues> = {
@@ -97,9 +97,17 @@ export type FormRegistryContext<T extends FieldValues> = {
   ) => void;
   unregister?: (name: string) => void;
   registry?: Record<string, RegistryEntry<T>>;
+  formulaRegistry?: Record<string, GraphNode<T>>;
   onChangeRegistry?: Record<string, ChangeRule<T>[]>;
   registerOnChangeUpdates?: (fieldConfig: FormFieldConfig) => void;
   updateState?: (newConfig: FormFieldConfig & { name: string }) => void;
   adapter?: Record<string, React.ComponentType<Record<string, unknown>>>;
   onChange?: (fieldName: string, value: unknown, allValues: T) => void;
+};
+
+export type GraphNode<T> = {
+  key: string;
+  value: string | null;
+  parents: Record<string, GraphNode<T>>;
+  children: Record<string, GraphNode<T>>;
 };

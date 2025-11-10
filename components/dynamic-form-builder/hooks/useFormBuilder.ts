@@ -1,6 +1,7 @@
 "use client";
 
 import { mergeDeep } from "@/lib/utils";
+import { Parser, Value } from "expr-eval";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
@@ -17,6 +18,7 @@ import {
   FormFieldConfig,
   FormProps,
   FormRegistryContext,
+  GraphNode,
 } from "../types";
 import {
   buildAjvSchemaFromPath,
@@ -25,7 +27,40 @@ import {
 } from "../utils";
 import { AjvValidator } from "../validator/AjvValidator";
 
+const parser = new Parser();
 const Validator = new AjvValidator();
+
+import {
+  differenceInDays,
+  differenceInMonths,
+  differenceInYears,
+  format,
+} from "date-fns";
+
+// Helper functions for date operations
+const getToday = () => format(new Date(), "yyyy-MM-dd");
+
+const getDateDiff = (
+  date1: string,
+  date2: string,
+  unit: "days" | "months" | "years" = "days"
+) => {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  switch (unit) {
+    case "days":
+      return differenceInDays(d1, d2);
+    case "months":
+      return differenceInMonths(d1, d2);
+    case "years":
+      return differenceInYears(d1, d2);
+    default:
+      return differenceInDays(d1, d2);
+  }
+};
+
+parser.functions.today = getToday;
+parser.functions.dateDiff = getDateDiff;
 
 export function useFormBuilder<T extends FieldValues>({
   formConfig,
@@ -43,6 +78,7 @@ export function useFormBuilder<T extends FieldValues>({
   });
 
   const registry = useRef<FormRegistryContext<T>["registry"]>({});
+  const formulaRegistry = useRef<FormRegistryContext<T>["formulaRegistry"]>({});
   const onChangeRegistry = useRef<FormRegistryContext<T>["onChangeRegistry"]>(
     {}
   );
@@ -94,6 +130,82 @@ export function useFormBuilder<T extends FieldValues>({
       });
     },
     [onChangeRegistry]
+  );
+
+  const debounceRegisterFormula = useCallback(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+    const adjList: Record<string, GraphNode<T>> = {};
+    return (fullFieldNameWithPath: string, fieldConfig: FormFieldConfig) => {
+      const { formula } = fieldConfig;
+      if (!formula) return;
+      const expr = parser.parse(formula);
+      const parentVariables = expr.variables();
+      const currentNode = {
+        key: fullFieldNameWithPath,
+        value: formula,
+        parents: {},
+        children: {},
+      };
+
+      if (!adjList[fullFieldNameWithPath]) {
+        adjList[fullFieldNameWithPath] = currentNode;
+      }
+      parentVariables.forEach((parent) => {
+        if (!adjList[parent]) {
+          adjList[parent] = {
+            key: parent,
+            value: null,
+            parents: {},
+            children: {},
+          };
+        }
+        // adjList[parent].children[fullFieldNameWithPath] = childNode;
+        adjList[fullFieldNameWithPath].parents[parent] = adjList[parent];
+      });
+
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        // Perform topological sort to create formula registry
+        const visited = new Set<string>();
+        const sorted: string[] = [];
+
+        function visit(node: string, childNode: GraphNode<T> | null) {
+          if (visited.has(node)) return;
+          visited.add(node);
+
+          const currentNode = adjList[node];
+          if (childNode) {
+            currentNode.children[childNode.key] = childNode;
+          }
+          Object.keys(currentNode.parents).forEach((parent) => {
+            visit(parent, currentNode);
+          });
+
+          sorted.push(node);
+        }
+
+        Object.keys(adjList).forEach((node) => {
+          if (!visited.has(node)) {
+            visit(node, null);
+          }
+        });
+
+        // Create formula registry with sorted nodes
+        formulaRegistry.current = sorted.reduce((acc, key) => {
+          acc[key] = adjList[key];
+          return acc;
+        }, {} as Record<string, GraphNode<T>>);
+
+        timeoutId = null;
+      }, 100);
+    };
+  }, [formulaRegistry]);
+
+  const registerFormula = useMemo(
+    () => debounceRegisterFormula(),
+    [debounceRegisterFormula]
   );
 
   const evaluateConditionsAndUpdate = useCallback(
@@ -161,6 +273,36 @@ export function useFormBuilder<T extends FieldValues>({
       }
 
       allValues = replaceUndefined(allValues);
+
+      const DFS = (node: GraphNode<T>) => {
+        if (node.value) {
+          const key = node.key;
+          const expr = parser.parse(node.value);
+          const res = expr.evaluate(allValues as Value);
+          form.setValue(key as Path<T>, res, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+          });
+          let curr = allValues;
+          const paths = key.split(".") as Path<T>[];
+          paths.forEach((path, index) => {
+            curr = (curr as never)[path];
+            if (index === paths.length - 1) {
+              curr = res;
+            }
+          });
+        }
+
+        if (node.children) {
+          Object.values(node.children).forEach((child) => {
+            DFS(child);
+          });
+        }
+      };
+
+      DFS(formulaRegistry.current![fieldName]);
+
       if (!onChangeRegistry.current || !onChangeRegistry.current[fieldName])
         return;
 
@@ -245,6 +387,7 @@ export function useFormBuilder<T extends FieldValues>({
 
       if (!registry.current) return;
       registerOnChangeUpdates(fullFieldNameWithPath, fieldConfig);
+      registerFormula(fullFieldNameWithPath, fieldConfig);
       registry.current[fullFieldNameWithPath as string] = {
         config: fieldConfig as FormFieldConfig & { name: FieldPath<T> },
         setState: setStateCall,
@@ -253,7 +396,12 @@ export function useFormBuilder<T extends FieldValues>({
 
       scheduleEvaluationAfterRegistration();
     },
-    [registerOnChangeUpdates, form, evaluateConditionsAndUpdate]
+    [
+      registerOnChangeUpdates,
+      form,
+      evaluateConditionsAndUpdate,
+      registerFormula,
+    ]
   );
 
   const debouncedEvaluateConditionsAndUpdate = useMemo(() => {

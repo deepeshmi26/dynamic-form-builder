@@ -60,6 +60,10 @@ const DateFormField = dynamic(
   () => import("./fields/DateFormField").then((m) => m.DateFormField),
   { ssr: false }
 );
+const NumberFormField = dynamic(
+  () => import("./fields/NumberFormField").then((m) => m.NumberFormField),
+  { ssr: false }
+);
 
 type Props<T extends FieldValues> = {
   settings: FormSettings;
@@ -90,12 +94,8 @@ export function FormField<T extends FieldValues>({
     setState(field);
   }, [field]);
 
-  const {
-    register,
-    adapter,
-    onChange,
-    unregister,
-  } = useFormRegistryContext<FieldValues>();
+  const { register, adapter, onChange, unregister } =
+    useFormRegistryContext<FieldValues>();
   const form = useFormContext();
 
   useEffect(() => {
@@ -114,19 +114,39 @@ export function FormField<T extends FieldValues>({
           onChange(fullFieldNameWithPath, value, allValues);
         }
       };
-      const placeholder = typeof label === 'string' ? `Enter ${label}` : (typeof state.alternateLabel === 'string' ? `Enter ${state.alternateLabel}` : undefined);
+      const placeholder =
+        typeof label === "string"
+          ? `Enter ${label}`
+          : typeof state.alternateLabel === "string"
+          ? `Enter ${state.alternateLabel}`
+          : undefined;
       if (adapter?.[state.renderComponent || state.type]) {
         const Component = adapter[state.renderComponent || state.type];
         return (
-          <Component {...state} placeholder={placeholder} value={field.value} onChange={handleChange} />
+          <Component
+            {...state}
+            placeholder={placeholder}
+            value={field.value}
+            onChange={handleChange}
+          />
         );
       }
       switch (state.type) {
         case FormItemType.BOOLEAN:
           return (
-            <CheckboxFormField {...state}
+            <CheckboxFormField
+              {...state}
               value={Boolean(field.value)}
               onChange={handleChange as (v: boolean) => void}
+            />
+          );
+        case FormItemType.NUMBER:
+          return (
+            <NumberFormField
+              {...state}
+              value={(field.value as number) ?? undefined}
+              onChange={handleChange as (v: number) => void}
+              placeholder={placeholder}
             />
           );
         case FormItemType.TEXT:
